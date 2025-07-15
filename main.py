@@ -10,7 +10,8 @@ app = FastAPI()
 
 # TODO: just question, without this line it still works, what is this for?
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(
+    directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
 
 # Middleware (optional CORS), for frontend
 # TODO: in case there's react or other front end
