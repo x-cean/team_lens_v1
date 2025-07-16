@@ -12,7 +12,7 @@ def extract_text_from_pdf(pdf_path):
                     text += page_text + "\n"
         return text
     except FileNotFoundError:
-        return ""
+        return "No info found"
 
 
 def extract_text_from_txt(file_path):
@@ -21,3 +21,8 @@ def extract_text_from_txt(file_path):
             return f.read()
     except FileNotFoundError:
         return ""
+
+
+# example_pdf_path = "../../data/test_examples/Nature_moon.pdf"
+# text = extract_text_from_pdf(example_pdf_path)
+# print(text)
