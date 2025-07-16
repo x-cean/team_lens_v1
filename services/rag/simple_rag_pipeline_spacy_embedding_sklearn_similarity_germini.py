@@ -2,6 +2,7 @@ import os
 import spacy
 from sklearn.metrics.pairwise import cosine_similarity
 from .parser import extract_text_from_pdf
+from ..llm.germini_functions import get_response_from_germini
 
 
 # install a pretrained pipeline package
@@ -63,9 +64,26 @@ def main():
     doc = extract_text_from_pdf(example_pdf_path)
     user_query = "What is this article mainly about? What did the scientists find in the dark side of the moon?"
     results = find_similarity_of_query_from_one_doc(user_query, doc)
-    print(results)
+    result_text = " ".join(results)
+
+    print(get_response_from_germini(result_text, user_query))
 
 
 
 if __name__ == "__main__":
     main()
+
+
+
+"""
+Germini:
+This article is mainly about:
+
+*   The investigation by Zhou and colleagues, using samples from the Chang'e-6 mission, into how lunar asymmetry manifested in the far-side mantle.
+*   Whether there is evidence that the impact that formed the SPA basin influenced this lunar asymmetry.
+
+Regarding what the scientists found in the "dark side" of the moon:
+
+*   The article clarifies that the part of the Moon that faces away from Earth is more accurately called the 'far side' and receives just as much sunlight as the side we can see, so it's not truly 'dark'.
+*   Regarding findings from the far-side samples, the text states that a valid interpretation of the data suggests that a physical mechanism caused the near side of the lunar magma ocean to behave differently from the far side. It also points to an intriguing possibility that the SPA impact directly affected the deep interior of the Moon. The article discusses what the data suggests and implies, rather than presenting a final, conclusive finding.
+"""
