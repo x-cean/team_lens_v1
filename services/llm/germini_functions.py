@@ -1,11 +1,5 @@
-from dotenv import load_dotenv
-import os
-
+from team_lens_v1.config import GERMINI_API_KEY
 from google import genai
-
-
-load_dotenv()
-GERMINI_API_KEY = os.getenv("GERMINI_API_KEY")
 
 
 def get_response_from_germini(user_prompt): # from google import genai

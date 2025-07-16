@@ -1,16 +1,10 @@
-from dotenv import load_dotenv
-import os
-
 import openai
-
-
-load_dotenv()
-API_KEY = os.getenv("OPENAI_API_KEY")
+from team_lens_v1.config import OPENAI_API_KEY
 
 
 def get_response_from_openai(user_prompt):
 
-    client = openai.OpenAI(api_key=API_KEY)
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
     # Specify the model to use
     model = "gpt-4o-mini"
