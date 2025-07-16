@@ -51,6 +51,7 @@ def find_similarity_of_query_from_one_doc(user_query: str, doc: str):
     # keep up to 5 best matches
     good_matches = good_matches[:5]
 
+    # collect the sentences in a list
     matched_sentences = [i[0] for i in good_matches]
 
     return matched_sentences
@@ -64,7 +65,7 @@ def main():
     doc = extract_text_from_pdf(example_pdf_path)
     user_query = "What is this article mainly about? What did the scientists find in the dark side of the moon?"
     results = find_similarity_of_query_from_one_doc(user_query, doc)
-    result_text = " ".join(results)
+    result_text = " ".join(results) # join list of str
 
     print(get_response_from_germini(result_text, user_query))
 
