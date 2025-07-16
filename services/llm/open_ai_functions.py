@@ -29,8 +29,7 @@ def get_response_from_openai(user_prompt):
     )
 
     # Return the generated text
-    # print(response.choices[0].message.content)
     return response.choices[0].message.content
 
 
-# get_response_from_openai("When is the meeting tomorrow?")
+# print(get_response_from_openai("When is the meeting tomorrow?"))

@@ -33,8 +33,6 @@ def get_response_from_deepseek(user_prompt):
         ]
     )
 
-    print(response.choices[0].message.content)
-    print(type(response.choices[0].message.content))
-    return system_prompt
+    return response.choices[0].message.content
 
-# get_response_from_deepseek("When is the meeting tomorrow?")
+# print(get_response_from_deepseek("When is the meeting tomorrow?"))

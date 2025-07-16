@@ -21,4 +21,4 @@ def get_response_from_germini(user_prompt): # from google import genai
     return response.text
 
 
-# get_response_from_germini("When is the meeting tomorrow?")
+# print(get_response_from_germini("When is the meeting tomorrow?"))
