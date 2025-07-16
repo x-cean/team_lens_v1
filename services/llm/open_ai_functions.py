@@ -1,5 +1,7 @@
 import openai
 from team_lens_v1.config import OPENAI_API_KEY
+from .prompt_settings import AI_ROLE
+
 
 
 def get_response_from_openai(user_prompt):
@@ -13,10 +15,7 @@ def get_response_from_openai(user_prompt):
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "assistant",
-             "content": "You are a helpful work assistant, "
-                        "good at finding work-related information from lots of documents"
-                        "and give simple, clear and professional answer."},
+            {"role": "assistant", "content": AI_ROLE},
             {"role": "user", "content": user_prompt}
         ],
         temperature=2,
