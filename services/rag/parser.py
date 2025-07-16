@@ -6,13 +6,11 @@ def extract_text_from_pdf(pdf_path):
     try:
         with open(pdf_path, "rb") as file:
             reader = PdfReader(file)
-            for page in reader.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text += page_text + "\n"
-        return text
+            page_texts = [page.extract_text() or "" for page in reader.pages]
+        text = " ".join(page_texts)
+        return text.replace("\n", " ")
     except FileNotFoundError:
-        return "No info found"
+        return "File not found"
 
 
 def extract_text_from_txt(file_path):
@@ -20,7 +18,7 @@ def extract_text_from_txt(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
-        return ""
+        return "File not found"
 
 
 # example_pdf_path = "../../data/test_examples/Nature_moon.pdf"
