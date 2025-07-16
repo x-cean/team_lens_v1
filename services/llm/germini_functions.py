@@ -1,6 +1,13 @@
 from team_lens_v1.config import GERMINI_API_KEY
 from google import genai
-from .prompt_settings import AI_ROLE
+# from .prompt_settings import AI_ROLE
+
+
+AI_ROLE = """
+You are a helpful work assistant, 
+good at finding work-related information from lots of documents and 
+give simple, clear and professional answer.
+"""
 
 
 def get_response_from_germini(user_prompt): # from google import genai
