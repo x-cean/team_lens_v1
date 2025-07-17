@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Lens Trial - File Upload & Chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/">Team Lens</a>
+        <a href="/login">Log In</a>
+    </div>
+    <h1>Upload a reference file and let AI answer your questions!</h1>
+    <h3>Currently supporting: .pdf, .txt</h3>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdf,.txt">
+<!--        <input type="file" name="file" accept=".pdf,.txt,.doc,.docx,.xls,.xlsx">-->
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
