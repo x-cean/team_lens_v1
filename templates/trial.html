@@ -14,10 +14,54 @@
     </div>
     <h1>Upload a reference file and let AI answer your questions!</h1>
     <h3>Currently supporting: .pdf, .txt</h3>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".pdf,.txt">
-<!--        <input type="file" name="file" accept=".pdf,.txt,.doc,.docx,.xls,.xlsx">-->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <div id="drop_zone">Drag & drop a file here or click to select</div>
+        <input type="file" name="file" id="fileInput" style="display:none;">
         <button type="submit">Upload</button>
     </form>
+    <div id="chat"></div>
+    <form id="chatForm">
+        <input type="text" id="message" autocomplete="off" placeholder="Type your message...">
+        <button type="submit">Send</button>
+    </form>
+    <script>
+        // Drag and drop for file upload
+        const dropZone = document.getElementById('drop_zone');
+        const fileInput = document.getElementById('fileInput');
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.background = '#eee'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.background = ''; });
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault(); dropZone.style.background = '';
+            if (e.dataTransfer.files.length) fileInput.files = e.dataTransfer.files;
+        });
+
+        // File upload via AJAX
+        document.getElementById('uploadForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            await fetch('/upload', { method: 'POST', body: formData });
+            alert('File uploaded!');
+        };
+
+        // Chat functionality
+        const chat = document.getElementById('chat');
+        document.getElementById('chatForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('message').value;
+            chat.innerHTML += `<div class="chat-msg user"><div class="bubble">${msg}</div></div>`;
+            document.getElementById('message').value = '';
+            // Send message to backend
+            const res = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            });
+            const data = await res.json();
+            chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${data.reply}</div></div>`;
+            chat.scrollTop = chat.scrollHeight;
+        };
+    </script>
 </body>
 </html>
