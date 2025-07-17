@@ -6,6 +6,13 @@ import os
 from routes import home, query
 
 
+# TODO: pipeline is basically like this, need to think about
+# 1 data structure: database not only general login and others but also file vector storage, chat history storage, etc
+# 2 better embedding and similarity logic? better ready to be used tools?
+# 3 backend structure, plan the endpoints
+# 4 look for further useful info
+
+
 app = FastAPI()
 
 # TODO: just question, without this line it still works, what is this for?
