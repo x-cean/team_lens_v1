@@ -67,7 +67,7 @@ a#try:hover {
     display: flex;
     align-items: center;
     justify-content: center; /* Center items horizontally */
-    gap: 10px;
+    gap: 15px;
     margin: 30px auto 10px auto;
 }
 
@@ -78,16 +78,63 @@ a#try:hover {
     margin-bottom:10px;
 }
 
-#chat {
+#chat-board {
     max-width: 600px;
     margin: 30px auto 20px auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#chat {
+    width: 100%;
+    height: 250px;
     padding: 20px;
-    background: #f7f7f9;
+    background: #FFFFFF;
     border-radius: 12px;
     min-height: 200px;
     font-family: 'Segoe UI', Arial, sans-serif;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     overflow-y: auto;
+    margin: 0;
+}
+
+#chatForm {
+    width: 100%;
+    margin: 0;
+}
+
+#chat-input-row {
+    display: flex;
+    width: 100%;
+    gap: 15px;
+}
+
+#chat-input-row input[type="text"] {
+    flex: 1 1 auto;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+#chat-input-row button, #uploadForm button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    background: #FFFFFF;
+    border: 1px solid #000;
+    color: #000000;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#chat-input-row button:hover, #uploadForm button:hover {
+    background: #000000;
+    color: #FFFFFF;
 }
 
 .chat-msg {
@@ -113,7 +160,7 @@ a#try:hover {
 }
 
 .user .bubble {
-    background: #007aff;
+    background: #000000;
     color: #fff;
     border-bottom-right-radius: 4px;
 }
