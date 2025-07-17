@@ -152,6 +152,7 @@ a#try:hover {
     font-size: 1rem;
     line-height: 1.5;
     word-break: break-word;
+    text-align: left;
 }
 
 .user .bubble {

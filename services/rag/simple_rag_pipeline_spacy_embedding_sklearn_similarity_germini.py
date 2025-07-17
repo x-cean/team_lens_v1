@@ -57,11 +57,10 @@ def find_similarity_of_query_from_one_doc(user_query: str, doc: str):
     return matched_sentences
 
 
-def simple_rag_pipeline(file_object, user_query):
+def simple_rag_pipeline(doc: str, user_query: str):
     """
     A function ready to be called from fastapi
     """
-    doc = extract_text_from_pdf_like_object(file_object)
     results = find_similarity_of_query_from_one_doc(user_query, doc)
     result_text = " ".join(results)
     response = get_response_from_germini(result_text, user_query)

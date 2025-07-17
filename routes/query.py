@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Request, UploadFile, File
+from fastapi import APIRouter, Request, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+import io
 import os
 from pydantic import BaseModel
 
-from team_lens_v1.services.rag.parser import extract_text_from_txt
+from team_lens_v1.services.rag.parser import extract_text_from_pdf_like_object
 from team_lens_v1.services.rag.simple_rag_pipeline_spacy_embedding_sklearn_similarity_germini \
-    import find_similarity_of_query_from_one_doc
+    import simple_rag_pipeline
 
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))
@@ -23,16 +24,14 @@ def trial_post(request: Request):
     pass
 
 
-@router.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    content = await file.read()
-    return {"filename": file.filename, "size": len(content), "file": content}
-
-# using pydantic to validate msg datatype
-class ChatMessage(BaseModel):
-    message: str
-
-@router.post("/chat")
-async def chat(message: ChatMessage):
-    reply = f"Echo: {message.message}"
-    return JSONResponse(content={"reply": reply})
+@router.post("/ask")
+async def ask(
+    file: UploadFile = File(None),
+    question: str = Form(...)
+):
+    content = await file.read() if file else None
+    # get str from pdf-like object
+    doc = extract_text_from_pdf_like_object(io.BytesIO(content)) if content else ""
+    # call the function
+    answer = simple_rag_pipeline(doc, question)
+    return JSONResponse({"answer": answer})
