@@ -114,6 +114,22 @@ a#try:hover {
     /*margin: 0 auto;*/
 }
 
+#chat-input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+#message {
+    width: 100%;
+    min-height: 36px;
+    max-height: 120px;
+    resize: none;
+    overflow-y: auto;
+    font-family: inherit;
+    font-size: 1em;
+    box-sizing: border-box;
+}
 
 /*#chat-input-row input[type="text"] {*/
 /*    flex: 1 1 auto;*/
