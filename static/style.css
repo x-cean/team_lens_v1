@@ -3,6 +3,7 @@ body {
     background-color: #FFFFFF;
     padding: 20px;
     color: #333;
+    text-align: center;
 }
 
 img {
@@ -12,13 +13,8 @@ img {
 
 #cover_picture, #error_picture {
     display: block;
-    margin: 0 auto 0 auto; /* 0 top margin, auto left/right, 0 bottom */
+    margin: 30px auto 0 auto; /* 0 top margin, auto left/right, 0 bottom */
 }
-
-#cover_picture {
-    margin-top: -50px;
-}
-
 
 .navbar {
     background-color: #FFFFFF;
@@ -48,32 +44,10 @@ h1 {
     color: #4F4F4F;
 }
 
-.flashes h3 {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
-    color: #b00020;
-    font-size: 1.1em;
-}
-
-.users, .movies {
-    background-color: #FFF;
-    border: 1px solid #DDD;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-}
-
-p {
-    margin: 10px 0;
-}
-
-button {
-    margin: 6px 10px 2px 0;
-}
-
-a #try {
+a#try {
     font-size: 1.3em;
-    display: block;
-    margin: 50px auto;
+    display: inline-block;
+    margin: 50px auto 0 auto;
     border: 1px solid #000;
     color: #fff;
     background-color: #000;
@@ -81,77 +55,10 @@ a #try {
     outline: none;
     border-radius: 20px;
     text-align: center;
-    text-decoration: none !important;
+    text-decoration: none;
 }
 
-a #try:hover {
+a#try:hover {
     background-color: #fff;
     color: #000;
-}
-
-form {
-    background-color: #ffffff;
-    border: 1px solid #DDD;
-    padding: 30px;
-    margin: 20px;
-    border-radius: 8px;
-}
-
-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #333;
-}
-
-form input[type="text"], form input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
-form input[type="submit"] {
-    background-color: #62667d;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-form input[type="submit"]:hover {
-    background-color: #000000;
-}
-
-.delete {
-    display: inline;
-    margin: 0;
-    padding: 0;
-    border: none;
-}
-
-ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-@media (max-width: 600px) {
-body {
-    padding: 10px;
-}
-
-form {
-    padding: 25px;
-    margin: 10px;
-}
-
-input[type="submit"] {
-    font-size: 18px;
-}
 }
