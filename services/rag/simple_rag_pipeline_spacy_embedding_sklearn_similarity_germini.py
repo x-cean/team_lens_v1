@@ -1,7 +1,7 @@
 import os
 import spacy
 from sklearn.metrics.pairwise import cosine_similarity
-from .parser import extract_text_from_pdf
+from .parser import extract_text_from_pdf, extract_text_from_pdf_like_object
 from ..llm.germini_functions import get_response_from_germini
 
 
@@ -55,6 +55,17 @@ def find_similarity_of_query_from_one_doc(user_query: str, doc: str):
     matched_sentences = [i[0] for i in good_matches]
 
     return matched_sentences
+
+
+def simple_rag_pipeline(file_object, user_query):
+    """
+    A function ready to be called from fastapi
+    """
+    doc = extract_text_from_pdf_like_object(file_object)
+    results = find_similarity_of_query_from_one_doc(user_query, doc)
+    result_text = " ".join(results)
+    response = get_response_from_germini(result_text, user_query)
+    return response
 
 
 def main():

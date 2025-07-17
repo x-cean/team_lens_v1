@@ -4,6 +4,10 @@ from fastapi.templating import Jinja2Templates
 import os
 from pydantic import BaseModel
 
+from team_lens_v1.services.rag.parser import extract_text_from_txt
+from team_lens_v1.services.rag.simple_rag_pipeline_spacy_embedding_sklearn_similarity_germini \
+    import find_similarity_of_query_from_one_doc
+
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))
 router = APIRouter()
@@ -22,7 +26,7 @@ def trial_post(request: Request):
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     content = await file.read()
-    return {"filename": file.filename, "size": len(content)}
+    return {"filename": file.filename, "size": len(content), "file": content}
 
 # using pydantic to validate msg datatype
 class ChatMessage(BaseModel):
