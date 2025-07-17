@@ -70,7 +70,7 @@ button {
     margin: 6px 10px 2px 0;
 }
 
-#click_to_try {
+a #try {
     font-size: 1.3em;
     display: block;
     margin: 50px auto;
@@ -81,9 +81,10 @@ button {
     outline: none;
     border-radius: 20px;
     text-align: center;
+    text-decoration: none !important;
 }
 
-#click_to_try:hover {
+a #try:hover {
     background-color: #fff;
     color: #000;
 }
