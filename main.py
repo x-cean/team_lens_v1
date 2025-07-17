@@ -23,6 +23,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(home.router)
 app.include_router(query.router)
