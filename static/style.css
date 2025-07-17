@@ -63,14 +63,6 @@ a#try:hover {
     color: #000;
 }
 
-#uploadForm {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center items horizontally */
-    gap: 15px;
-    margin: 30px auto 10px auto;
-}
-
 #drop_zone {
     border:2px dashed #ccc;
     padding:20px;

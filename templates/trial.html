@@ -15,23 +15,17 @@
     <h1>Upload a reference file and let AI answer your questions!</h1>
     <h3>Currently supporting: .pdf, .txt</h3>
 
-    <form id="uploadForm" enctype="multipart/form-data">
+    <form id="chatForm" enctype="multipart/form-data">
         <div id="drop_zone">Drag & drop a file here or click to select</div>
         <input type="file" name="file" id="fileInput" style="display:none;">
-        <button type="submit">Upload</button>
-    </form>
-
-    <div id="chat-section">
         <div id="chat-board">
             <div id="chat"></div>
-            <form id="chatForm">
-                <div id="chat-input-row">
-                    <input type="text" id="message" autocomplete="off" placeholder="Type your message...">
-                    <button type="submit">Send</button>
-                </div>
-            </form>
+            <div id="chat-input-row">
+                <input type="text" id="message" autocomplete="off" placeholder="Type your message...">
+                <button type="submit">Send</button>
+            </div>
         </div>
-    </div>
+    </form>
 
     <script>
         // Drag and drop for file upload
@@ -45,34 +39,26 @@
             if (e.dataTransfer.files.length) fileInput.files = e.dataTransfer.files;
         });
 
-        // File upload via AJAX
-        document.getElementById('uploadForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-            await fetch('/upload', { method: 'POST', body: formData });
-            alert('File uploaded!');
-        };
-
-        // Chat functionality
+        // Chat and file upload in one form
         const chat = document.getElementById('chat');
         document.getElementById('chatForm').onsubmit = async function(e) {
-        e.preventDefault();
-        const msg = document.getElementById('message').value;
-        chat.innerHTML += `<div class="chat-msg user"><div class="bubble">${msg}</div></div>`;
-        document.getElementById('message').value = '';
-        chat.scrollTop = chat.scrollHeight; // Scroll after user message
+            e.preventDefault();
+            const msg = document.getElementById('message').value;
+            chat.innerHTML += `<div class="chat-msg user"><div class="bubble">${msg}</div></div>`;
+            document.getElementById('message').value = '';
+            chat.scrollTop = chat.scrollHeight;
 
-        // Send message to backend
-        const res = await fetch('/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: msg })
-        });
-        const data = await res.json();
-        chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${data.reply}</div></div>`;
-        chat.scrollTop = chat.scrollHeight; // Scroll after bot reply
-};
+            const formData = new FormData();
+            formData.append('question', msg);
+            if (fileInput.files[0]) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            const res = await fetch('/ask', { method: 'POST', body: formData });
+            const data = await res.json();
+            chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${data.answer}</div></div>`;
+            chat.scrollTop = chat.scrollHeight;
+        };
     </script>
 </body>
 </html>
