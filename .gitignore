@@ -1,6 +1,6 @@
 # for now i ignore the data
 /data/
-
+/notes/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

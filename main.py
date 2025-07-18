@@ -7,10 +7,12 @@ from routes import home, query
 
 
 # TODO: pipeline is basically like this, need to think about
-# 1 data structure: database not only general login and others but also file vector storage, chat history storage, etc
-# 2 better embedding and similarity logic? better ready to be used tools?
-# 3 backend structure, plan the endpoints
-# 4 look for further useful info
+# todo: 1 data structure: database not only general login and others but also file vector storage,
+#  chat history storage, etc. In the trial page now, the file uploaded is not stored, maybe it should be.
+#  Did i get it right that chatting to germini via api once also has memory in that one chat?
+# todo: 2 better embedding and similarity logic? better ready to be used tools?
+# todo: 3 backend structure, plan the endpoints
+# todo: 4 look for further useful info
 
 
 app = FastAPI()
