@@ -12,7 +12,8 @@ from routes import home, query
 #  Did i get it right that chatting to germini via api once also has memory in that one chat?
 # todo: 2 better embedding and similarity logic? better ready to be used tools?
 # todo: 3 backend structure, plan the endpoints
-# todo: 4 look for further useful info
+# todo: 4 UI UX, upload file, waiting for answer
+# todo: 5 look for further useful info
 
 
 app = FastAPI()
