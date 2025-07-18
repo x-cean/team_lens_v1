@@ -32,29 +32,39 @@ def embedding_string(text: str):
 
 
 def find_similarity_of_query_from_one_doc(user_query: str, doc: str):
-    # create a list of sentences
-    sentences = text_to_sentences(doc)
+    # empty doc str
+    if doc == "":
+        return []
 
-    # embedding
-    doc_vectors = embedding_list_of_strings(sentences)
-    query_vector = nlp(user_query).vector
+    elif user_query == "":
+        return []
 
-    # compare
-    similarity = cosine_similarity([query_vector], doc_vectors)[0]
+    else:
+        # create a list of sentences
+        sentences = text_to_sentences(doc)
 
-    # sorting
-    ranked_indices = similarity.argsort()[::-1]
+        # embedding
+        doc_vectors = embedding_list_of_strings(sentences)
+        query_vector = nlp(user_query).vector
 
-    # get a list of good enough results: sentences and similarity scores, threshold is for now 0.2
-    good_matches = [(sentences[idx], similarity[idx]) for idx in ranked_indices if similarity[idx] > 0.2]
+        # compare
+        similarity = cosine_similarity([query_vector], doc_vectors)[0]
 
-    # keep up to 5 best matches
-    good_matches = good_matches[:5]
+        # sorting
+        ranked_indices = similarity.argsort()[::-1]
 
-    # collect the sentences in a list
-    matched_sentences = [i[0] for i in good_matches]
+        # get a list of good enough results: sentences and similarity scores, threshold is for now 0.2
+        good_matches = [(sentences[idx], similarity[idx]) for idx in ranked_indices if similarity[idx] > 0.2]
 
-    return matched_sentences
+        # keep up to 5 best matches
+        good_matches = good_matches[:5]
+
+        # collect the sentences in a list
+        matched_sentences = [i[0] for i in good_matches]
+
+        print(matched_sentences)
+
+        return matched_sentences
 
 
 def simple_rag_pipeline(doc: str, user_query: str):
@@ -62,7 +72,10 @@ def simple_rag_pipeline(doc: str, user_query: str):
     A function ready to be called from fastapi
     """
     results = find_similarity_of_query_from_one_doc(user_query, doc)
-    result_text = " ".join(results)
+    if results:
+        result_text = " ".join(results)
+    else:
+        result_text = ""
     response = get_response_from_germini(result_text, user_query)
     return response
 

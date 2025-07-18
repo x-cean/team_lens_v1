@@ -13,6 +13,7 @@ from routes import home, query
 # todo: 2 better embedding and similarity logic? better ready to be used tools?
 # todo: 3 backend structure, plan the endpoints
 # todo: 4 UI UX, upload file, waiting for answer
+# todo: 5 Logging: dev purpose now, and run log for the future
 # todo: 5 look for further useful info
 
 
