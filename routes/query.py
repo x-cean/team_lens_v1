@@ -26,7 +26,7 @@ def trial_post(request: Request):
 
 @router.post("/ask")
 async def ask(
-    file: UploadFile = File(None),
+    file: UploadFile | None = File(None),
     question: str = Form(...)
 ):
     content = await file.read() if file else None
