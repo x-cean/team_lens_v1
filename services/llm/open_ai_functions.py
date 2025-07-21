@@ -32,4 +32,4 @@ def get_response_from_openai(user_prompt):
     return response.choices[0].message.content
 
 
-# print(get_response_from_openai("When is the meeting tomorrow?"))
+print(get_response_from_openai("When is the meeting tomorrow?"))
