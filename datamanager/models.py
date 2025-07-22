@@ -14,3 +14,9 @@ class User(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.datetime.now)
 
 
+class Chat(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    title: str = Field(default=f"Chat on {datetime.datetime.now().date()}")
+    user_id: int = Field(foreign_key="user.id")
+    created_at: datetime = Field(default_factory=datetime.datetime.now)
+
