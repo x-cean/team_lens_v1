@@ -16,6 +16,11 @@ class UserBase(SQLModel):
     organization: int | None = None
     workspace: int | None = None
     created_at: datetime = Field(default_factory=datetime.datetime.now)
+    def __repr__(self):
+        return f"User(name: {self.name}, created_at: {self.created_at})"
+
+    def __str__(self):
+        return f"User(name: {self.name}, created_at: {self.created_at})"
 
 
 # user creation
@@ -29,7 +34,7 @@ class UserCreate(UserBase):
 # user database model, database table inferred from class name
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    hashed_password: str # todo
+    hashed_password: str | None = None # todo
     items: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
@@ -55,6 +60,12 @@ class MessageBase(SQLModel):
             raise ValueError("sender_id is not required when is_system is True")
         return values
 
+    def __repr__(self):
+        return f"Message, created_at: {self.created_at})"
+
+    def __str__(self):
+        return f"Message, created_at: {self.created_at})"
+
 
 # chat, shared properties
 class ChatBase(SQLModel):
@@ -62,6 +73,11 @@ class ChatBase(SQLModel):
     created_at: datetime = Field(default_factory=datetime.datetime.now)
     history: list[MessageBase] | None = None # todo: think about what to put here
 
+    def __repr__(self):
+        return f"Chat, title: {self.title}, created_at: {self.created_at})"
+
+    def __str__(self):
+        return f"Chat, title: {self.title}, created_at: {self.created_at})"
 
 # todo: crud
 
