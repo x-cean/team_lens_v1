@@ -33,13 +33,34 @@ class User(UserBase, table=True):
     items: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
+# message, shared properties
+class MessageBase(SQLModel):
+    text: str
+    created_at: datetime = Field(default_factory=datetime.datetime.now)
+    is_system: bool = False
+    sender_id: uuid.UUID | None = Field(foreign_key="user.id", nullable=True)
+
+    # todo: only get sender_id when is_system is false?
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate_sender_id
+
+    @classmethod
+    def validate_sender_id(cls, values):
+        is_system = values.get("is_system")
+        sender_id = values.get("sender_id")
+        if not is_system and sender_id is None:
+            raise ValueError("sender_id is required when is_system is False")
+        elif is_system and sender_id is not None:
+            raise ValueError("sender_id is not required when is_system is True")
+        return values
 
 
 # chat, shared properties
 class ChatBase(SQLModel):
     title: str = Field(default=f"Chat on {datetime.datetime.now().date()}", min_length=10, max_length=255)
     created_at: datetime = Field(default_factory=datetime.datetime.now)
-    history: list[str] | None = None
+    history: list[MessageBase] | None = None # todo: think about what to put here
 
 
 # todo: crud
@@ -52,4 +73,6 @@ class Chat(ChatBase, table=True):
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
     owner: User | None = Relationship(back_populates="items")
+
+
 
