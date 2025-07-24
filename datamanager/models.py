@@ -6,12 +6,11 @@ from sqlmodel import Field, Relationship, SQLModel
 
 
 """models made using sqlmodel"""
-# user: shared properties
+# user, shared properties
 class UserBase(SQLModel):
-    name: str
-    full_name: str
-    password: EmailStr
-    role: str = Field(default="user")
+    name: str = Field(unique=True, min_length=3, max_length=30)
+    full_name: str = Field(min_length=1, max_length=255)
+    email: EmailStr = Field(unique=True, index=True, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
     organization: int | None = None
@@ -36,9 +35,9 @@ class User(UserBase, table=True):
 
 
 
-
+# chat, shared properties
 class ChatBase(SQLModel):
-    title: str = Field(default=f"Chat on {datetime.datetime.now().date()}")
+    title: str = Field(default=f"Chat on {datetime.datetime.now().date()}", min_length=10, max_length=255)
     created_at: datetime = Field(default_factory=datetime.datetime.now)
     history: list[str] | None = None
 
