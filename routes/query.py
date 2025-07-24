@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 import io
 import os
-from pydantic import BaseModel
+
 
 from team_lens_v1.services.rag.parser import extract_text_from_pdf_like_object
 from team_lens_v1.services.rag.simple_rag_pipeline_spacy_embedding_sklearn_similarity_germini \
