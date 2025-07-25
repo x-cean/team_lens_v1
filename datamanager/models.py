@@ -1,6 +1,6 @@
-import datetime
 import uuid
 
+from datetime import datetime
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -9,13 +9,18 @@ from sqlmodel import Field, Relationship, SQLModel
 # user, shared properties
 class UserBase(SQLModel):
     name: str = Field(unique=True, min_length=3, max_length=30)
-    full_name: str = Field(min_length=1, max_length=255)
+    full_name: str | None = Field(max_length=255)
     email: EmailStr = Field(unique=True, index=True, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
     organization: int | None = None
     workspace: int | None = None
-    created_at: datetime = Field(default_factory=datetime.datetime.now)
+    # created_at: datetime = Field(default_factory=datetime.now)
+
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
+
     def __repr__(self):
         return f"User(name: {self.name}, created_at: {self.created_at})"
 
@@ -33,15 +38,16 @@ class UserCreate(UserBase):
 
 # user database model, database table inferred from class name
 class User(UserBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    hashed_password: str | None = None # todo
+    # id: int = Field(default_factory=uuid.uuid4, primary_key=True) # todo:uuid handling
+    id: int = Field(default=None, primary_key=True)
+    # hashed_password: str | None = None # todo
     items: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # message, shared properties
-class MessageBase(SQLModel):
+class Message(SQLModel):
     text: str
-    created_at: datetime = Field(default_factory=datetime.datetime.now)
+    # created_at: datetime = Field(default_factory=datetime.now)
     is_system: bool = False
     sender_id: uuid.UUID | None = Field(foreign_key="user.id", nullable=True)
 
@@ -69,9 +75,9 @@ class MessageBase(SQLModel):
 
 # chat, shared properties
 class ChatBase(SQLModel):
-    title: str = Field(default=f"Chat on {datetime.datetime.now().date()}", min_length=10, max_length=255)
-    created_at: datetime = Field(default_factory=datetime.datetime.now)
-    history: list[MessageBase] | None = None # todo: think about what to put here
+    title: str = Field(default=f"Chat on {datetime.now().date()}", min_length=10, max_length=255)
+    # created_at: datetime = Field(default_factory=datetime.now)
+    history: str | None = None # todo: think about what to put here
 
     def __repr__(self):
         return f"Chat, title: {self.title}, created_at: {self.created_at})"
@@ -84,7 +90,8 @@ class ChatBase(SQLModel):
 
 # chat database model, database table inferred from class name
 class Chat(ChatBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    # id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
