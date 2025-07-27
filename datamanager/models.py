@@ -9,13 +9,13 @@ from sqlmodel import Field, Relationship, SQLModel
 # user, shared properties
 class UserBase(SQLModel):
     name: str = Field(unique=True, min_length=3, max_length=30)
-    full_name: str | None = Field(max_length=255)
+    full_name: str | None = None
     email: EmailStr = Field(unique=True, index=True, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
     organization: int | None = None
     workspace: int | None = None
-    # created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=datetime.now)
 
     model_config = {
         "arbitrary_types_allowed": True
@@ -38,8 +38,8 @@ class UserCreate(UserBase):
 
 # user database model, database table inferred from class name
 class User(UserBase, table=True):
-    # id: int = Field(default_factory=uuid.uuid4, primary_key=True) # todo:uuid handling
-    id: int = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    # id: int = Field(default=None, primary_key=True)
     # hashed_password: str | None = None # todo
     items: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
 

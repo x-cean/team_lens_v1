@@ -1,6 +1,6 @@
 from .datamanager_interface import DataManagerInterface
 from .models import User, Chat, Message
-from config import SUPABASE_URL, SUPABASE_KEY
+from team_lens_v1.config import SUPABASE_URL, SUPABASE_KEY
 from supabase import Client, create_client
 
 
