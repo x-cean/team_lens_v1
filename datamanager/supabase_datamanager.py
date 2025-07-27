@@ -36,6 +36,39 @@ class SupabaseDataManager(DataManagerInterface):
         response = self.client.table('user').insert(user_info).execute()
         return response.data
 
-user_example = User(name='user_three', email='user_three@example.com')
+    def get_all_users(self):
+        pass
+
+    def get_user_by_id(self, user_id):
+        pass
+
+    def get_user_by_name(self, user_name):
+        pass
+
+    def get_user_by_email(self, user_email):
+        pass
+
+    def get_user_chats(self, user_id):
+        pass
+
+    def get_chat_by_id(self, chat_id):
+        pass
+
+    def update_user(self, user_id):
+        pass
+
+    def delete_user(self, user_id):
+        pass
+
+    def create_chat(self, chat, user_id):
+        pass
+
+    def update_chat(self, chat_id):
+        pass
+
+    def delete_chat(self, chat_id):
+        pass
+
+user_example = User(name='user_four', email='user_four@example.com')
 data_manager = SupabaseDataManager(supabase)
 print(data_manager.create_user(user_example))
