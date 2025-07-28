@@ -50,6 +50,8 @@ class Message(SQLModel):
     # created_at: datetime = Field(default_factory=datetime.now)
     is_system: bool = False
     sender_id: uuid.UUID | None = Field(foreign_key="user.id", nullable=True)
+    chat_id: uuid.UUID | None = Field(foreign_key="chat.id", nullable=False, ondelete="CASCADE")
+    created_at: datetime = Field(default_factory=datetime.now)
 
     # todo: only get sender_id when is_system is false?
     @classmethod
