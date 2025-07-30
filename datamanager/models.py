@@ -17,9 +17,10 @@ class UserBase(SQLModel):
     workspace: int | None = None
     created_at: datetime = Field(default_factory=datetime.now)
 
-    model_config = {
-        "arbitrary_types_allowed": True
-    }
+    # uncomment if needed:
+    # model_config = {
+    #     "arbitrary_types_allowed": True
+    # }
 
     def __repr__(self):
         return f"User(name: {self.name}, created_at: {self.created_at})"
@@ -39,7 +40,6 @@ class UserCreate(UserBase):
 # user database model, database table inferred from class name
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    # id: int = Field(default=None, primary_key=True)
     # hashed_password: str | None = None # todo
     items: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
 
@@ -47,7 +47,6 @@ class User(UserBase, table=True):
 # message, shared properties
 class Message(SQLModel):
     text: str
-    # created_at: datetime = Field(default_factory=datetime.now)
     is_system: bool = False
     sender_id: uuid.UUID | None = Field(foreign_key="user.id", nullable=True)
     chat_id: uuid.UUID | None = Field(foreign_key="chat.id", nullable=False, ondelete="CASCADE")

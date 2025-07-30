@@ -3,8 +3,9 @@ import uuid
 
 from .datamanager_interface import DataManagerInterface
 from .models import User, Chat, Message
-from config import SUPABASE_URL, SUPABASE_KEY
+from config import SUPABASE_URL, SUPABASE_KEY # add folder name when running from main script
 from supabase import Client, create_client
+from sqlmodel import SQLModel
 
 
 def sterilize_for_json(data: dict) -> dict:
@@ -23,6 +24,10 @@ if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError("Please set SUPABASE_URL and SUPABASE_KEY environment variables")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+engine = create_engine(f"postgresql://postgres:[YOUR-PASSWORD]@db.abmnqmqdnhoaqombygsy.supabase.co:5432/postgres")
+
+SQLModel.metadata.create_all(engine)
 
 
 class SupabaseDataManager(DataManagerInterface):
