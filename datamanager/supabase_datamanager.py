@@ -46,7 +46,8 @@ class SupabaseDataManager(DataManagerInterface):
         pass
 
     def get_user_by_id(self, user_id):
-        pass
+        response = self.client.table("user").select("*").eq("id", user_id).execute()
+        return User.model_validate(response.data[0])
 
     def get_user_by_name(self, user_name):
         pass
@@ -75,6 +76,12 @@ class SupabaseDataManager(DataManagerInterface):
     def delete_chat(self, chat_id):
         pass
 
-user_example = User(name='user_six', email='user_six@example.com')
 data_manager = SupabaseDataManager(supabase)
-print(data_manager.create_user(user_example))
+
+# # create
+# user_example = User(name='user_seven', email='user_seven@example.com')
+# print(data_manager.create_user(user_example))
+
+# get user by id
+user_id = "90172268-181f-4495-b06e-b78cb64353a7"
+print(data_manager.get_user_by_id(user_id))
