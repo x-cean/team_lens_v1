@@ -2,6 +2,7 @@ import uuid
 
 from datetime import datetime
 from pydantic import EmailStr
+from pygments.lexer import default
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -45,11 +46,12 @@ class User(UserBase, table=True):
 
 
 # message, shared properties
-class Message(SQLModel):
+class Message(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
     text: str
     is_system: bool = False
     sender_id: uuid.UUID | None = Field(foreign_key="user.id", nullable=True)
-    chat_id: uuid.UUID | None = Field(foreign_key="chat.id", nullable=False, ondelete="CASCADE")
+    chat_id: int | None = Field(foreign_key="chat.id", nullable=False, ondelete="CASCADE")
     created_at: datetime = Field(default_factory=datetime.now)
 
     # todo: only get sender_id when is_system is false?

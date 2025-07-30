@@ -75,6 +75,6 @@ class SupabaseDataManager(DataManagerInterface):
     def delete_chat(self, chat_id):
         pass
 
-user_example = User(name='user_five', email='user_five@example.com')
+user_example = User(name='user_six', email='user_six@example.com')
 data_manager = SupabaseDataManager(supabase)
 print(data_manager.create_user(user_example))
