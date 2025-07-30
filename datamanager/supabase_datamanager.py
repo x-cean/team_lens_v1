@@ -3,9 +3,9 @@ import uuid
 
 from .datamanager_interface import DataManagerInterface
 from .models import User, Chat, Message
-from config import SUPABASE_URL, SUPABASE_KEY # add folder name when running from main script
+from config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_DB_PASSWORD # add folder name when running from main script
 from supabase import Client, create_client
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, create_engine
 
 
 def sterilize_for_json(data: dict) -> dict:
@@ -23,11 +23,12 @@ def sterilize_for_json(data: dict) -> dict:
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError("Please set SUPABASE_URL and SUPABASE_KEY environment variables")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-engine = create_engine(f"postgresql://postgres:[YOUR-PASSWORD]@db.abmnqmqdnhoaqombygsy.supabase.co:5432/postgres")
-
+# create tables if not exist
+engine = create_engine(f"postgresql://postgres:{SUPABASE_DB_PASSWORD}@db.abmnqmqdnhoaqombygsy.supabase.co:5432/postgres")
 SQLModel.metadata.create_all(engine)
+
+# initiate client
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 class SupabaseDataManager(DataManagerInterface):
@@ -74,6 +75,6 @@ class SupabaseDataManager(DataManagerInterface):
     def delete_chat(self, chat_id):
         pass
 
-user_example = User(name='user_four', email='user_four@example.com')
+user_example = User(name='user_five', email='user_five@example.com')
 data_manager = SupabaseDataManager(supabase)
 print(data_manager.create_user(user_example))
