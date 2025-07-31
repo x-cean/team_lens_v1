@@ -93,7 +93,6 @@ class ChatBase(SQLModel):
 
 # chat database model, database table inferred from class name
 class Chat(ChatBase, table=True):
-    # id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     id: int | None = Field(default=None, primary_key=True)
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
