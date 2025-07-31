@@ -56,7 +56,12 @@ class SupabaseDataManager(DataManagerInterface):
         response = self.client.table("user").select("*").eq("email", user_email).execute()
         if response.data:
             user_data = response.data[0]
-            user = User(**user_data)
+            print(user_data)
+            print(user_data.get('items'))
+            user = User.model_validate(user_data)
+            print(type(user.created_at))
+            # user = User(**user_data)
+            ###todo: here validate always cause problem so i used this, but then datetime is str
             return user
         else:
             return None
@@ -87,8 +92,9 @@ class SupabaseDataManager(DataManagerInterface):
         response = self.client.table('message').insert(msg_info).execute()
         return response.data # todo: check and decide what to return
 
-supabase_client = supabase_init()
-data_manager = SupabaseDataManager(supabase_client)
+# # start database
+# supabase_client = supabase_init()
+# data_manager = SupabaseDataManager(supabase_client)
 
 # # create
 # user_example = User(name='user_six', email='user_six@example.com')

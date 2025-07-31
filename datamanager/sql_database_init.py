@@ -1,4 +1,4 @@
-from config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_DB_PASSWORD, SUPABASE_URL_2
+from team_lens_v1.config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_DB_PASSWORD, SUPABASE_URL_2
 from supabase import Client, create_client
 from sqlmodel import SQLModel, create_engine, Session, select
 

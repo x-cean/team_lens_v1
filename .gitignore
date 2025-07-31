@@ -1,4 +1,5 @@
-# for now i ignore the data
+# for dev i ignore the following
+tests.py
 /data/
 /notes/
 
