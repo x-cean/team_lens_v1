@@ -29,7 +29,7 @@ class SupabaseDataManager(DataManagerInterface):
     def create_user(self, user: User):
         user_info = sterilize_for_json(user.model_dump(mode='python'))
         response = self.client.table('user').insert(user_info).execute()
-        return response.data
+        return response.data # todo: maybe return user id?
 
     def get_all_users(self):
         pass
@@ -73,7 +73,7 @@ class SupabaseDataManager(DataManagerInterface):
     def delete_user(self, user_id):
         pass
 
-    def create_chat(self, chat, user_id):
+    def create_chat(self, chat: Chat, user_id):
         pass
 
     def update_chat(self, chat_id):
@@ -81,6 +81,11 @@ class SupabaseDataManager(DataManagerInterface):
 
     def delete_chat(self, chat_id):
         pass
+
+    def create_message(self, msg: Message):
+        msg_info = sterilize_for_json(msg.model_dump(mode='python'))
+        response = self.client.table('message').insert(msg_info).execute()
+        return response.data # todo: check and decide what to return
 
 supabase_client = supabase_init()
 data_manager = SupabaseDataManager(supabase_client)
@@ -100,3 +105,6 @@ data_manager = SupabaseDataManager(supabase_client)
 # # get user by email
 # a_user_email = "user_six@example.com"
 # print(data_manager.get_user_by_email(a_user_email))
+
+# create msg
+# a_msg = Message(text="Hello, what can I help you", is_system=True, chat_id=1)
