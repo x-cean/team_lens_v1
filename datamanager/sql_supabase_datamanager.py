@@ -36,19 +36,30 @@ class SupabaseDataManager(DataManagerInterface):
 
     def get_user_by_id(self, user_id):
         response = self.client.table("user").select("*").eq("id", user_id).execute()
-        print(response.data[0])
-        print(User.model_fields)
-        user_data = response.data[0]
-        user_data['items'] = []
-        print(user_data.get('items'))
-        print("not found")
-        return User.model_validate(user_data)
+        if response.data:
+            user_data = response.data[0]
+            user = User(**user_data)
+            return user
+        else:
+            return None
 
     def get_user_by_name(self, user_name):
-        pass
+        response = self.client.table("user").select("*").eq("name", user_name).execute()
+        if response.data:
+            user_data = response.data[0]
+            user = User(**user_data)
+            return user
+        else:
+            return None
 
     def get_user_by_email(self, user_email):
-        pass
+        response = self.client.table("user").select("*").eq("email", user_email).execute()
+        if response.data:
+            user_data = response.data[0]
+            user = User(**user_data)
+            return user
+        else:
+            return None
 
     def get_user_chats(self, user_id):
         pass
@@ -78,6 +89,14 @@ data_manager = SupabaseDataManager(supabase_client)
 # user_example = User(name='user_six', email='user_six@example.com')
 # print(data_manager.create_user(user_example))
 
-# get user by id
-user_id = "90172268-181f-4495-b06e-b78cb64353a7"
-print(data_manager.get_user_by_id(user_id))
+# # get user by id
+# a_user_id = "90172268-181f-4495-b06e-b78cb64353a7"
+# print(data_manager.get_user_by_id(a_user_id))
+
+# # get user by name
+# a_user_name = "user_six"
+# print(data_manager.get_user_by_name(a_user_name))
+
+# # get user by email
+# a_user_email = "user_six@example.com"
+# print(data_manager.get_user_by_email(a_user_email))
