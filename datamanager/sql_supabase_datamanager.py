@@ -56,12 +56,14 @@ class SupabaseDataManager(DataManagerInterface):
         response = self.client.table("user").select("*").eq("email", user_email).execute()
         if response.data:
             user_data = response.data[0]
-            print(user_data)
-            print(user_data.get('items'))
-            user = User.model_validate(user_data)
-            print(type(user.created_at))
-            # user = User(**user_data)
+            # print(user_data)
+            # print(user_data.get('items'))
+            # user = User.model_validate(user_data)
+            # print(type(user.created_at))
+            user = User(**user_data)
             ###todo: here validate always cause problem so i used this, but then datetime is str
+            ###todo: from this point it appears that supabase lib is not the best fit for python
+            ###todo: will use sqlmodel that allows working with python object directly
             return user
         else:
             return None
