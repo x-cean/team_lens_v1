@@ -3,7 +3,9 @@ import uuid
 
 from .datamanager_interface import DataManagerInterface
 from .models import User, Chat, Message
+from .sql_database_init import supabase_init, postgresql_init
 from sqlmodel import SQLModel, create_engine, Session, select
+from supabase import Client
 
 
 def sterilize_for_json(data: dict) -> dict:
@@ -16,9 +18,6 @@ def sterilize_for_json(data: dict) -> dict:
         else:
             result[key] = value
     return result
-
-
-
 
 
 class SupabaseDataManager(DataManagerInterface):
@@ -72,10 +71,11 @@ class SupabaseDataManager(DataManagerInterface):
     def delete_chat(self, chat_id):
         pass
 
-data_manager = SupabaseDataManager(supabase)
+supabase_client = supabase_init()
+data_manager = SupabaseDataManager(supabase_client)
 
 # # create
-# user_example = User(name='user_seven', email='user_seven@example.com')
+# user_example = User(name='user_six', email='user_six@example.com')
 # print(data_manager.create_user(user_example))
 
 # get user by id
