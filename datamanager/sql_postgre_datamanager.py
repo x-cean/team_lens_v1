@@ -23,6 +23,7 @@ def sterilize_for_json(data: dict) -> dict:
 class PostgresDataManager(DataManagerInterface):
     def __init__(self, *, session: Session):
         if session is None:
+            logger.error("Attempt to initiate PostgresDataManager without session")
             raise ValueError("Postgres session cannot be None")
         logger.info("Creating postgres session")
         self.session = session
