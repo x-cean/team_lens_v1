@@ -19,8 +19,12 @@ def sterilize_for_json(data: dict) -> dict:
 
 
 class PostgresDataManager(DataManagerInterface):
-    def __init__(self):
-        pass
+    def __init__(self, *, session: Session):
+        if session is None:
+            raise ValueError("Postgres session cannot be None")
+        print("Creating session")
+        self.session = session
+        print("Session created successfully")
 
     def create_user(self, user: User):
         pass
@@ -60,3 +64,5 @@ class PostgresDataManager(DataManagerInterface):
 
     def create_message(self, msg: Message):
         pass
+
+

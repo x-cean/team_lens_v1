@@ -5,9 +5,10 @@ from sqlmodel import SQLModel, create_engine, Session, select
 # sql
 def postgresql_init():
     # create tables if not exist
-    postgre_engine = create_engine(f"postgresql://postgres:{SUPABASE_DB_PASSWORD}@db.{SUPABASE_URL_2}:5432/postgres")
-    SQLModel.metadata.create_all(postgre_engine)
-    return postgre_engine
+    postgres_engine = create_engine(f"postgresql://postgres:{SUPABASE_DB_PASSWORD}@db.{SUPABASE_URL_2}:5432/postgres")
+    SQLModel.metadata.create_all(postgres_engine)
+    postgres_session = Session(postgres_engine)
+    return postgres_session
 
 # supabase
 def supabase_init():
