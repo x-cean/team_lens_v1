@@ -1,10 +1,12 @@
 import datetime
 import uuid
 
+from sqlmodel import SQLModel, create_engine, Session, select
+from team_lens_v1.logger import logger
+
 from .datamanager_interface import DataManagerInterface
 from .models import User, Chat, Message
 from .sql_database_init import supabase_init, postgresql_init
-from sqlmodel import SQLModel, create_engine, Session, select
 
 def sterilize_for_json(data: dict) -> dict:
     result = {}
@@ -22,9 +24,9 @@ class PostgresDataManager(DataManagerInterface):
     def __init__(self, *, session: Session):
         if session is None:
             raise ValueError("Postgres session cannot be None")
-        print("Creating session")
+        logger.info("Creating postgres session")
         self.session = session
-        print("Session created successfully")
+        logger.info("Postgres session created successfully")
 
     def create_user(self, user: User):
         pass
