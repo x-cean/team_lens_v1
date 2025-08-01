@@ -45,6 +45,14 @@ class User(UserBase, table=True):
     items: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
+# properties to receive via API on update, all are optional
+class UserPublic(UserBase):
+    id: uuid.UUID
+
+class UsersPublic(SQLModel):
+    data: list[UserPublic]
+    count: int
+
 # message, shared properties
 class Message(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)

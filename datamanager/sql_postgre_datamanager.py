@@ -1,11 +1,12 @@
 import datetime
 import uuid
 
-from sqlmodel import SQLModel, create_engine, Session, select
+from sqlmodel import SQLModel, create_engine, Session, select, func
 from team_lens_v1.logger import logger
+from typing import Any
 
 from .datamanager_interface import DataManagerInterface
-from .models import User, Chat, Message
+from .models import User, UsersPublic, Chat, Message
 from .sql_database_init import supabase_init, postgresql_init
 
 def sterilize_for_json(data: dict) -> dict:
@@ -29,14 +30,21 @@ class PostgresDataManager(DataManagerInterface):
         self.session = session
         logger.info("Postgres session created successfully")
 
-    def create_user(self, user_create: User):
+    def create_user(self, user_create: User) -> User:
         self.session.add(user_create)
         self.session.commit()
         self.session.refresh(user_create)
         return user_create
 
-    def get_all_users(self):
-        pass
+    def get_all_users(self, skip: int = 0, limit: int = 100) -> Any:
+        count_statement = select(func.count()).select_from(User)
+        count = self.session.exec(count_statement).one()
+
+        statement = select(User).offset(skip).limit(limit)
+        users = self.session.exec(statement).all()
+
+        return UsersPublic(data=users, count=count)
+
 
     def get_user_by_id(self, user_id):
         pass
