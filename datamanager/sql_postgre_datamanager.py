@@ -9,23 +9,14 @@ from .datamanager_interface import DataManagerInterface
 from .models import User, UsersPublic, Chat, Message
 from .sql_database_init import supabase_init, postgresql_init
 
-def sterilize_for_json(data: dict) -> dict:
-    result = {}
-    for key, value in data.items():
-        if isinstance(value, datetime.datetime):
-            result[key] = value.isoformat()
-        elif isinstance(value, uuid.UUID):
-            result[key] = str(value)
-        else:
-            result[key] = value
-    return result
-
 
 class PostgresDataManager(DataManagerInterface):
+
     def __init__(self, *, session: Session):
         if session is None:
             logger.error("Attempt to initiate PostgresDataManager without session")
             raise ValueError("Postgres session cannot be None")
+
         logger.info("Creating postgres session")
         self.session = session
         logger.info("Postgres session created successfully")
@@ -33,6 +24,8 @@ class PostgresDataManager(DataManagerInterface):
     def create_user(self, user_create: User) -> User:
         self.session.add(user_create)
         self.session.commit()
+        logger.info(f"User {user_create.name} created successfully with ID {user_create.id}")
+
         self.session.refresh(user_create)
         return user_create
 
@@ -45,15 +38,20 @@ class PostgresDataManager(DataManagerInterface):
 
         return UsersPublic(data=users, count=count)
 
-
     def get_user_by_id(self, user_id):
-        pass
+        statement = select(User).where(User.id == user_id)
+        session_user = self.session.exec(statement).first()
+        return session_user
 
     def get_user_by_name(self, user_name):
-        pass
+        statement = select(User).where(User.name == user_name)
+        session_user = self.session.exec(statement).first()
+        return session_user
 
     def get_user_by_email(self, user_email):
-        pass
+        statement = select(User).where(User.email == user_email)
+        session_user = self.session.exec(statement).first()
+        return session_user
 
     def get_user_chats(self, user_id):
         pass
