@@ -54,7 +54,13 @@ class PostgresDataManager(DataManagerInterface):
         return session_user
 
     def get_user_chats(self, user_id):
-        pass
+        session_user = self.get_user_by_id(user_id)
+        if not session_user:
+            logger.error(f"User with ID {user_id} not found")
+            return None
+        statement = select(Chat).where(Chat.user_id == user_id)
+        user_chats = self.session.exec(statement).all()
+        return user_chats
 
     def get_chat_by_id(self, chat_id):
         pass
