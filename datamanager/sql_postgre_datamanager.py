@@ -29,8 +29,11 @@ class PostgresDataManager(DataManagerInterface):
         self.session = session
         logger.info("Postgres session created successfully")
 
-    def create_user(self, user: User):
-        pass
+    def create_user(self, user_create: User):
+        self.session.add(user_create)
+        self.session.commit()
+        self.session.refresh(user_create)
+        return user_create
 
     def get_all_users(self):
         pass
