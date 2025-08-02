@@ -42,7 +42,7 @@ class UserCreate(UserBase):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     # hashed_password: str | None = None # todo
-    items: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
+    chats: list["Chat"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # properties to receive via API on update, all are optional
@@ -105,7 +105,16 @@ class Chat(ChatBase, table=True):
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    owner: User | None = Relationship(back_populates="items")
+    owner: User | None = Relationship(back_populates="chats")
 
 
+# properties to receive via API on update
+class ChatPublic(ChatBase):
+    id: int
+    owner_id: uuid.UUID
+
+
+class ChatsPublic(SQLModel):
+    data: list[ChatPublic]
+    count: int
 

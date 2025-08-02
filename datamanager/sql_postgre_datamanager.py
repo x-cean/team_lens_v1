@@ -6,7 +6,7 @@ from team_lens_v1.logger import logger
 from typing import Any
 
 from .datamanager_interface import DataManagerInterface
-from .models import User, UsersPublic, Chat, Message
+from .models import User, UsersPublic, Chat, ChatsPublic, Message
 from .sql_database_init import supabase_init, postgresql_init
 
 
@@ -53,14 +53,20 @@ class PostgresDataManager(DataManagerInterface):
         session_user = self.session.exec(statement).first()
         return session_user
 
-    def get_user_chats(self, user_id):
+    def get_user_chats(self, user_id, skip: int = 0, limit: int = 100):
         session_user = self.get_user_by_id(user_id)
         if not session_user:
             logger.error(f"User with ID {user_id} not found")
             return None
-        statement = select(Chat).where(Chat.owner_id == user_id)
+
+        count_statement = (select(func.count()).select_from(Chat)
+                           .where(Chat.owner_id == user_id))
+        count = self.session.exec(count_statement).one()
+
+        statement = select(Chat).where(Chat.owner_id == user_id).offset(skip).limit(limit)
         user_chats = self.session.exec(statement).all()
-        return user_chats
+
+        return ChatsPublic(data=user_chats, count=count)
 
     def get_chat_by_id(self, chat_id):
         pass
