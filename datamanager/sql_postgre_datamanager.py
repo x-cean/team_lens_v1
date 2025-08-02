@@ -58,7 +58,7 @@ class PostgresDataManager(DataManagerInterface):
         if not session_user:
             logger.error(f"User with ID {user_id} not found")
             return None
-        statement = select(Chat).where(Chat.user_id == user_id)
+        statement = select(Chat).where(Chat.owner_id == user_id)
         user_chats = self.session.exec(statement).all()
         return user_chats
 
