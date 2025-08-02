@@ -75,7 +75,14 @@ class PostgresDataManager(DataManagerInterface):
         pass
 
     def delete_user(self, user_id):
-        pass
+        user = self.get_user_by_id(user_id)
+        if not user:
+            logger.error(f"User with ID {user_id} not found")
+            return Message(message="User not found")
+        self.session.delete(user)
+        self.session.commit()
+        return Message(message="User deleted successfully"), "User deleted successfully"
+        # todo: what to return here?
 
     def create_chat(self, chat: Chat, user_id):
         pass
