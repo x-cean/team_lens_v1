@@ -4,6 +4,7 @@ import uuid
 from .datamanager_interface import DataManagerInterface
 from .models import User, Chat, Message
 from .sql_database_init import supabase_init, postgresql_init
+from datetime import datetime
 from sqlmodel import SQLModel, create_engine, Session, select
 from supabase import Client
 
@@ -60,8 +61,11 @@ class SupabaseDataManager(DataManagerInterface):
             # print(user_data.get('items'))
             # user = User.model_validate(user_data)
             # print(type(user.created_at))
+            if "created_at" in user_data and isinstance(user_data["created_at"], str):
+                user_data["created_at"] = datetime.fromisoformat(user_data["created_at"])
             user = User(**user_data)
-            ###todo: here validate always cause problem so i used this, but then datetime is str
+            ###todo: here validate always cause problem so i used **, but then datetime is str
+            ###todo: weird, cause pydantic should handle it
             ###todo: from this point it appears that supabase lib is not the best fit for python
             ###todo: will use sqlmodel that allows working with python object directly
             return user
