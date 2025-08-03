@@ -1,6 +1,6 @@
 import openai
 from team_lens_v1.config import OPENAI_API_KEY
-# from .prompt_settings import AI_ROLE
+from .prompt_settings import AI_ROLE_TRIAL
 
 
 AI_ROLE = """
@@ -10,7 +10,7 @@ give simple, clear and professional answer.
 """
 
 
-def get_response_from_openai(user_prompt):
+def get_response_from_openai(user_prompt, resources="No resources provided."):
 
     client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
@@ -21,7 +21,7 @@ def get_response_from_openai(user_prompt):
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "assistant", "content": AI_ROLE},
+            {"role": "assistant", "content": AI_ROLE_TRIAL + resources},
             {"role": "user", "content": user_prompt}
         ],
         temperature=2,

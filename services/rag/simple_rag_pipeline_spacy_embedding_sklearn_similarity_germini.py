@@ -3,6 +3,7 @@ import spacy
 from sklearn.metrics.pairwise import cosine_similarity
 from .parser import extract_text_from_pdf, extract_text_from_pdf_like_object
 from ..llm.germini_functions import get_response_from_germini
+from ..llm.open_ai_functions import get_response_from_openai
 
 
 # install a pretrained pipeline package
@@ -34,10 +35,10 @@ def embedding_string(text: str):
 def find_similarity_of_query_from_one_doc(user_query: str, doc: str):
     # empty doc str
     if doc == "":
-        return []
+        return ["User provided no document or an empty document."]
 
     elif user_query == "":
-        return []
+        return ["User started the conversation without a word. Greet them and ask them to upload a file."]
 
     else:
         # create a list of sentences
@@ -59,8 +60,17 @@ def find_similarity_of_query_from_one_doc(user_query: str, doc: str):
         # keep up to 5 best matches
         good_matches = good_matches[:5]
 
+        # if no good matches, return a message
+        if not good_matches:
+            return ["No relevant information found in the document based on the user's query."]
+
         # collect the sentences in a list
         matched_sentences = [i[0] for i in good_matches]
+
+        # insert a message about the number of matches
+        matched_sentences.insert(
+            0,
+            f"Found {len(matched_sentences)} relevant sentences in the provided document.")
 
         print(matched_sentences)
 
@@ -76,7 +86,8 @@ def simple_rag_pipeline(doc: str, user_query: str):
         result_text = " ".join(results)
     else:
         result_text = ""
-    response = get_response_from_germini(result_text, user_query)
+    # response = get_response_from_germini(result_text, user_query)
+    response = get_response_from_openai(user_prompt=user_query, resources=result_text)
     return response
 
 
