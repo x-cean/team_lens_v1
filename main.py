@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 import os
 
-from routes import home, query
+from routes import home, trial
 
 app = FastAPI()
 
@@ -23,4 +23,4 @@ app.add_middleware(
 )
 
 app.include_router(home.router)
-app.include_router(query.router)
+app.include_router(trial.router)

@@ -9,6 +9,8 @@ from team_lens_v1.services.rag.parser import extract_text_from_pdf_like_object
 from team_lens_v1.services.rag.simple_rag_pipeline_spacy_embedding_sklearn_similarity_germini \
     import simple_rag_pipeline
 
+from team_lens_v1.datamanager.sql_postgre_datamanager import PostgresDataManager
+
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))
 router = APIRouter()
@@ -34,4 +36,10 @@ async def ask(
     doc = extract_text_from_pdf_like_object(io.BytesIO(content)) if content else ""
     # call the function
     answer = simple_rag_pipeline(doc, question)
+
+    #todo: save chat history to a database
+    a_trial_chat = PostgresDataManager.create_trial_chat()
+
+
+
     return JSONResponse({"answer": answer})

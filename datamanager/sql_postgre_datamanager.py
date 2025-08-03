@@ -6,7 +6,7 @@ from team_lens_v1.logger import logger
 from typing import Any
 
 from .datamanager_interface import DataManagerInterface
-from .models import User, UsersPublic, Chat, ChatsPublic, Message
+from .models import User, UsersPublic, Chat, ChatsPublic, Message, TrialChat, TrialMessage
 from .sql_database_init import supabase_init, postgresql_init
 
 
@@ -96,4 +96,24 @@ class PostgresDataManager(DataManagerInterface):
     def create_message(self, msg: Message):
         pass
 
+    def create_trial_chat(self):
+        """
+        Creates a trial chat for the trial user.
+        """
+        trial_chat = TrialChat()
+        self.session.add(trial_chat)
+        self.session.commit()
+        self.session.refresh(trial_chat)
+        return trial_chat
 
+    def create_trial_message(self, msg: str, trial_chat: TrialChat | None = None) -> TrialMessage:
+        """
+        Creates a trial message for the trial chat.
+        """
+        if not trial_chat:
+            trial_chat = self.create_trial_chat()
+        trial_message = TrialMessage(text=msg, chat_id=trial_chat.id)
+        self.session.add(trial_message)
+        self.session.commit()
+        self.session.refresh(trial_message)
+        return trial_message
