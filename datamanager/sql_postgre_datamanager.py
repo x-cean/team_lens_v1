@@ -106,13 +106,10 @@ class PostgresDataManager(DataManagerInterface):
         self.session.refresh(trial_chat)
         return trial_chat
 
-    def create_trial_message(self, msg: str, trial_chat: TrialChat | None = None) -> TrialMessage:
+    def save_trial_message(self, trial_message: TrialMessage) -> TrialMessage:
         """
         Creates a trial message for the trial chat.
         """
-        if not trial_chat:
-            trial_chat = self.create_trial_chat()
-        trial_message = TrialMessage(text=msg, chat_id=trial_chat.id)
         self.session.add(trial_message)
         self.session.commit()
         self.session.refresh(trial_message)
