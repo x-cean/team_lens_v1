@@ -11,6 +11,7 @@ from team_lens_v1.services.rag.simple_rag_pipeline_spacy_embedding_sklearn_simil
     import simple_rag_pipeline
 
 from team_lens_v1.datamanager.sql_postgre_datamanager import PostgresDataManager
+from team_lens_v1.datamanager.sql_database_init import fastapi_postgresql_init
 
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))
@@ -32,20 +33,21 @@ async def ask(
     file: UploadFile | None = File(None),
     question: str = Form(...),
     chat_id: int | None = Form(None),
-    session: Session = Depends(PostgresDataManager.postgresql_init)
+    session: Session = Depends(fastapi_postgresql_init)
 ):
+
     content = await file.read() if file else None
     # get str from pdf-like object
     doc = extract_text_from_pdf_like_object(io.BytesIO(content)) if content else ""
     # call the function
     answer = simple_rag_pipeline(doc, question)
 
-    #todo: save chat history to a database, here need to figure more about dependencies and how to sep users
+    #todo: save chat history to a database, currently chatid is always the same???
     data_manager = PostgresDataManager(session=session)
     if chat_id is None:
         a_trial_chat = data_manager.create_trial_chat()
         chat_id = a_trial_chat.id
-    # Save the user message
+    # save the user message
     a_question_message = TrialMessage(
         chat_id=chat_id,
         text=question
@@ -60,7 +62,3 @@ async def ask(
     data_manager.save_trial_message(an_answer_message)
 
     return JSONResponse({"answer": answer, "chat_id": chat_id})
-
-
-
-    return JSONResponse({"answer": answer})
