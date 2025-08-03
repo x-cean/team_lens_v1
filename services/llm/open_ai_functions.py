@@ -3,13 +3,6 @@ from team_lens_v1.config import OPENAI_API_KEY
 from .prompt_settings import AI_ROLE_TRIAL
 
 
-AI_ROLE = """
-You are a helpful work assistant, 
-good at finding work-related information from lots of documents and 
-give simple, clear and professional answer.
-"""
-
-
 def get_response_from_openai(user_prompt, resources="No resources provided."):
 
     client = openai.OpenAI(api_key=OPENAI_API_KEY)
@@ -24,7 +17,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
             {"role": "assistant", "content": AI_ROLE_TRIAL + resources},
             {"role": "user", "content": user_prompt}
         ],
-        temperature=2,
+        temperature=0.5, # setting to 2 cause multi language weird answers
         max_tokens=150
     )
 
@@ -32,4 +25,4 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
     return response.choices[0].message.content
 
 
-print(get_response_from_openai("When is the meeting tomorrow?"))
+# print(get_response_from_openai("When is the meeting tomorrow?"))

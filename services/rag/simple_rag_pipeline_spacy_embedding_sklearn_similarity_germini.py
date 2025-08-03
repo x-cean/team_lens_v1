@@ -101,7 +101,7 @@ def main():
     results = find_similarity_of_query_from_one_doc(user_query, doc)
     result_text = " ".join(results) # join a list of str
 
-    print(get_response_from_germini(result_text, user_query))
+    # print(get_response_from_germini(result_text, user_query))
 
 
 
