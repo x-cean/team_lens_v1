@@ -1,5 +1,6 @@
 import openai
 from team_lens_v1.config import OPENAI_API_KEY
+from team_lens_v1.logger import logger
 from .prompt_settings import AI_ROLE_TRIAL
 
 
@@ -18,11 +19,18 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
             {"role": "user", "content": user_prompt}
         ],
         temperature=0.5, # setting to 2 cause multi language weird answers
-        max_tokens=150
+        max_tokens=600
     )
 
     # Return the generated text
-    return response.choices[0].message.content
+    answer = response.choices[0].message.content
+    if "```" in answer:
+        answer = answer.replace("```", "")
+    elif "```html" in answer:
+        answer = answer.replace("```html", "")
+    logger.info(f"OpenAI response: {answer}")
+
+    return answer
 
 
 # print(get_response_from_openai("When is the meeting tomorrow?"))
