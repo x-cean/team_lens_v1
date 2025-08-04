@@ -19,16 +19,12 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
             {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
             {"role": "user", "content": user_prompt}
         ],
-        temperature=0.5, # setting to 2 cause multi language weird answers
+        temperature=0.5,
         max_tokens=600
     )
 
     # Return the generated text
     answer = response.choices[0].message.content
-    # if answer.startswith("```html"):
-    #     answer = answer[7:]
-    # if answer.endswith("```"):
-    #     answer = answer[:-3]
     logger.info(f"OpenAI response: {answer}")
     return answer
 
