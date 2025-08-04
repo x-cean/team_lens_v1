@@ -1,7 +1,7 @@
 import openai
 from team_lens_v1.config import OPENAI_API_KEY
 from team_lens_v1.logger import logger
-from .prompt_settings import AI_ROLE_TRIAL
+from .prompt_settings import AI_ROLE_TRIAL, AI_ROLE_TRIAL_SHORT_BACKUP
 
 
 def get_response_from_openai(user_prompt, resources="No resources provided."):
@@ -15,7 +15,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "assistant", "content": AI_ROLE_TRIAL + resources},
+            {"role": "assistant", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
             {"role": "user", "content": user_prompt}
         ],
         temperature=0.5, # setting to 2 cause multi language weird answers

@@ -27,7 +27,9 @@
         </div>
     </form>
     <!--DOMPurify for Safe HTML Rendering-->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
 
     <script>
         // Drag and drop for file upload
@@ -67,8 +69,12 @@
             if (data.chat_id) {
                 localStorage.setItem('chat_id', data.chat_id);
             }
-            // Sanitize AI answer before rendering
-            const safeHTML = DOMPurify.sanitize(data.answer);
+            // Sanitize Markdown string first
+            const cleanMarkdown = DOMPurify.sanitize(data.answer, {ALLOWED_TAGS: [], ALLOWED_ATTR: []});
+            // Convert sanitized Markdown to HTML
+            const htmlStr = marked.parse(cleanMarkdown);
+            // Sanitize the resulting HTML
+            const safeHTML = DOMPurify.sanitize(htmlStr);
             chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${safeHTML}</div></div>`;
             chat.scrollTop = chat.scrollHeight;
         };
