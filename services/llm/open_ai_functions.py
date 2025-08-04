@@ -16,7 +16,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "assistant", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
+            {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
             {"role": "user", "content": user_prompt}
         ],
         temperature=0.5, # setting to 2 cause multi language weird answers
@@ -25,16 +25,10 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
 
     # Return the generated text
     answer = response.choices[0].message.content
-    # if "```" in answer:
-    #     answer = answer.replace("```", "")
-    # elif "```html" in answer:
-    #     answer = answer.replace("```html", "")
-    # elif "html" in answer[:5]:
-    #     answer = answer.replace("html", "")
-    if answer.startswith("```html"):
-        answer = answer[7:]
-    if answer.endswith("```"):
-        answer = answer[:-3]
+    # if answer.startswith("```html"):
+    #     answer = answer[7:]
+    # if answer.endswith("```"):
+    #     answer = answer[:-3]
     logger.info(f"OpenAI response: {answer}")
     return answer
 
