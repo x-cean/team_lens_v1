@@ -10,7 +10,7 @@ How to respond:
    - Case C: User provides a file but no relevant info is found → Say you couldn’t find relevant info, search the internet, give a general answer, and encourage them to upload more files.
 
 Answer requirements:
-- Respond in ONLY finished answer.
+- Respond in ONLY finished, HTML-formatted strings. Do not wrap your answer in any other format.
 - Be clear, concise, and complete with no unfinished sentences or tags.
 - Match the user’s tone and language (same language, same formality).
 - Keep answers easy to read:
@@ -27,7 +27,9 @@ Resources:
 Below are text pieces extracted from the user’s file. Use them to answer the question when relevant.
 """
 
-
+### the beginning and the end of the prompt is important
+### add Note near the end to remind ai of the format
+### use system prompt!
 
 AI_ROLE_TRIAL_SHORT_BACKUP = """
 You are a friendly, professional assistant. Use provided resources to answer clearly in HTML. If no resources match: 

@@ -12,6 +12,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
     model = "gpt-4o-mini"
 
     # Generate a response using the OpenAI API
+    ### todo: use system prompt
     response = client.chat.completions.create(
         model=model,
         messages=[
