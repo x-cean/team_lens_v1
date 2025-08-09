@@ -13,18 +13,18 @@ def get_response_from_openai(user_prompt, resources="No resources provided."):
 
     # Generate a response using the OpenAI API
     ### todo: use system prompt
-    response = client.chat.completions.create(
+    response = client.responses.create(
         model=model,
-        messages=[
+        input=[
             {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
             {"role": "user", "content": user_prompt}
         ],
         temperature=0.5,
-        max_tokens=600
+        max_output_tokens=600
     )
 
     # Return the generated text
-    answer = response.choices[0].message.content
+    answer = response.output_text
     logger.info(f"OpenAI response: {answer}")
     return answer
 
