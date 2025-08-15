@@ -1,5 +1,6 @@
 import os
 import spacy
+import spacy.cli
 from sklearn.metrics.pairwise import cosine_similarity
 from .parser import extract_text_from_pdf, extract_text_from_pdf_like_object
 from ..llm.germini_functions import get_response_from_germini
@@ -8,6 +9,10 @@ from ..llm.open_ai_functions import get_response_from_openai
 
 # install a pretrained pipeline package
 # python -m spacy download en_core_web_sm
+
+# download the model if not already downloaded
+if not spacy.util.is_package("en_core_web_sm"):
+    spacy.cli.download("en_core_web_sm")
 
 # load the model
 nlp = spacy.load("en_core_web_sm")

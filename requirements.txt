@@ -4,4 +4,7 @@ pypdf
 spacy
 scikit-learn
 openai
-google
+google-genai
+groq
+supabase
+psycopg2-binary
