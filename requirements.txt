@@ -1,0 +1,7 @@
+fastapi
+sqlmodel
+pypdf
+spacy
+scikit-learn
+openai
+google
