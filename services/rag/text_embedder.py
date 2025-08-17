@@ -7,14 +7,14 @@ from typing import List
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
-def openai_text_embedder(texts: List[str]):
+def openai_text_embedder(text):
     """
     Uses OpenAI to embed text.
     :param text: The text to embed.
     :return: The embedding vector.
     """
     response = client.embeddings.create(
-        input=texts,
+        input=text,
         model="text-embedding-3-small"
     )
     return response.data[0].embedding
