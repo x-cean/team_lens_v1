@@ -8,7 +8,7 @@ def extract_text_from_pdf(pdf_path):
             reader = PdfReader(file)
             page_texts = [page.extract_text() or "" for page in reader.pages]
         text = " ".join(page_texts)
-        return text.replace("\n", " ")
+        return text.replace("\n", "")
     except FileNotFoundError:
         return "File not found"
 
