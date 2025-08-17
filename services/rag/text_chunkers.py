@@ -5,9 +5,13 @@ def recursive_char_text_split(text: str, chunk_size: int = 400, chunk_overlap: i
     """
     Splits the input text into chunks of specified size with optional overlap.
     """
-    text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", ". ", " ", ""], chunk_size = 600, chunk_overlap=0)
+    text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", ". ", " ", ""],
+                                                   keep_separator=False,
+                                                   chunk_size = 600,
+                                                   chunk_overlap=0)
     docs = text_splitter.create_documents([text])
-    return docs
+    texts = [doc.page_content for doc in docs]
+    return texts
 
 
 def semantic_text_split(text: str, chunk_size: int = 400, chunk_overlap: int = 0):
