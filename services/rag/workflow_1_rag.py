@@ -2,7 +2,7 @@ from typing import List
 from .parser import extract_text_from_pdf
 from .text_chunkers import recursive_char_text_split
 from .text_embedder import openai_text_embedder
-from .cosine_similarity import similarity_matcher_skl
+from .cosine_similarity import similarity_matcher_skl, cosine_similarity_manual, find_similar_items_manual
 
 
 def file_embeddings(pdf_path: str, chunk_size: int = 600, chunk_overlap: int = 0) -> List[tuple[str, List[float]]]:
@@ -35,12 +35,8 @@ def find_similarities(query_embedding: tuple[str, List[float]],
     """
     Finds the most similar document embeddings to the query embedding.
     """
-    sorted_similarities = similarity_matcher_skl(query_embedding, doc_embeddings)
-
-    # Filter results based on the threshold and select top_k results
-    similarity_matches = [(doc, score) for doc, score in sorted_similarities if score > threshold]
-    similarity_matches = similarity_matches[:top_k]
-    return similarity_matches
+    sorted_similarities = find_similar_items_manual(query_embedding, doc_embeddings, threshold, top_k)
+    return sorted_similarities
 
 
 def rag_workflow_1(pdf_path: str, user_query: str,
@@ -49,4 +45,5 @@ def rag_workflow_1(pdf_path: str, user_query: str,
     docs_embs = file_embeddings(pdf_path)
     query_emb = query_embedding(user_query)
     similarities = find_similarities(query_emb, docs_embs, threshold, top_k)
+    return similarities
 
