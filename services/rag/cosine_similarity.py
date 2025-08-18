@@ -30,7 +30,10 @@ def find_similar_items_manual(query, docs, threshold=0.5, top_k=2):
     docs_similarity_scores = []
     for doc in docs:
         similarity = cosine_similarity_manual(query[1], doc[1])
-        docs_similarity_scores.append((doc[0], similarity[0]))
+        docs_similarity_scores.append((doc[0], similarity))
     # Sort the documents by similarity score in descending order
     docs_similarity_scores.sort(key=lambda x: x[1], reverse=True)
-    return docs_similarity_scores
+    # Filter out items below the threshold
+    filtered_results = \
+        [(doc, score) for doc, score in docs_similarity_scores if score > threshold][:top_k]
+    return filtered_results

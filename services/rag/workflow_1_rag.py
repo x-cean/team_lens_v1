@@ -41,7 +41,7 @@ def find_similarities(query_embedding: tuple[str, List[float]],
 
 def rag_workflow_1(pdf_path: str, user_query: str,
                    chunk_size: int = 600, chunk_overlap: int = 0,
-                     threshold: float = 0.5, top_k: int = 2) -> List[tuple[str, float]]:
+                     threshold: float = 0.2, top_k: int = 3) -> List[tuple[str, float]]:
     docs_embs = file_embeddings(pdf_path)
     query_emb = query_embedding(user_query)
     similarities = find_similarities(query_emb, docs_embs, threshold, top_k)
