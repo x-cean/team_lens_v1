@@ -14,5 +14,10 @@ def recursive_char_text_split(text: str, chunk_size: int = 400, chunk_overlap: i
     return texts
 
 
+### todo: specific text splitter, filtering metadata with help of llm
+### todo: senmatic spliiter
+### todo: dockling chunking
+
+
 def semantic_text_split(text: str, chunk_size: int = 400, chunk_overlap: int = 0):
     pass

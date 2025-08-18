@@ -3,6 +3,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Tuple
 
 
+### todo: vector database
+
+
 def similarity_matcher_skl(query: tuple[str, List[float]], docs: List[Tuple[str, List[float]]]) -> List[tuple[str, float]]:
     docs_similarity_scores = []
     for doc in docs:
