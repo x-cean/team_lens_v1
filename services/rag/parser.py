@@ -4,7 +4,7 @@ from langchain_docling import DoclingLoader
 
 def file_loader(file_path: str):
     """
-    Loads a file and returns its content.
+    Loads a file get its content, chunk and return as a list of langchain documents with langchain_docling
     """
     loader = DoclingLoader(file_path=file_path)
     docs = loader.load()
@@ -12,6 +12,14 @@ def file_loader(file_path: str):
         print(f"- {d.page_content=}")
         print(type(d))
     return docs
+
+
+def docs_to_texts(docs: list) -> list:
+    """
+    Converts a list of parsed langchain documents to a list of text strings
+    """
+    texts = [doc.page_content for doc in docs]
+    return texts
 
 
 def extract_text_from_pdf(pdf_path):
