@@ -26,7 +26,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
             tools=[{"type": "web_search_preview"}],
             reasoning={"effort": "low"},
             text={"verbosity": "low"},
-            max_output_tokens=600
+            max_output_tokens=1000
         )
     else:
         response = client.responses.create(
