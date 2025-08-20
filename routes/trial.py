@@ -6,6 +6,7 @@ import io
 import os
 
 from team_lens_v1.datamanager.models import TrialMessage
+from team_lens_v1.services.rag.workflow_1_rag import rag_workflow_1
 from team_lens_v1.services.rag.parser import extract_text_from_pdf_like_object
 from team_lens_v1.services.rag.simple_rag_pipeline_spacy_embedding_sklearn_similarity_germini \
     import simple_rag_pipeline
@@ -35,12 +36,18 @@ async def ask(
     chat_id: int | None = Form(None),
     session: Session = Depends(fastapi_postgresql_init)
 ):
-
     content = await file.read() if file else None
-    # get str from pdf-like object
-    doc = extract_text_from_pdf_like_object(io.BytesIO(content)) if content else ""
+    ### todo: handle the upload, or maybe input website directly and so on
+    # for pdf:
+    # write a file temporarily to disk if file is provided
+    if content is not None:
+        with open ("data/test_examples/temp_file.pdf", "wb") as f:
+            if content:
+                f.write(content)
     # call the function
-    answer = simple_rag_pipeline(doc, question)
+    answer = rag_workflow_1(user_query=question,
+                            pdf_path="data/test_examples/temp_file.pdf" if content else None,
+                            threshold=0.4, top_k=3)
 
     #todo: save chat history to a database, currently chatid is always the same???
     data_manager = PostgresDataManager(session=session)

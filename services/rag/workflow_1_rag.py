@@ -1,3 +1,4 @@
+import io
 from typing import List
 from .parser import extract_text_from_pdf, file_loader, docs_to_texts
 from .text_chunkers import recursive_char_text_split
@@ -40,16 +41,22 @@ def query_embedding(query: str) -> tuple[str, List[float]]:
 #     return sorted_similarities
 
 
-def rag_workflow_1(pdf_path: str, user_query: str,
+def rag_workflow_1(user_query: str, pdf_path: str | io.BytesIO = None,
                      threshold: float = 0.4, top_k: int = 3) -> str:
-    docs_embs = file_embeddings(pdf_path)
-    query_emb = query_embedding(user_query)
-    similarities = find_similar_items_manual(query_emb, docs_embs, threshold, top_k)
-    if similarities:
-        text_resources = [doc for doc, score in similarities]
-        text_resources = "\n".join(text_resources)
+
+    # If a file is given, embed it
+    if pdf_path:
+        query_emb = query_embedding(user_query)
+        docs_embs = file_embeddings(pdf_path)
+        similarities = find_similar_items_manual(query_emb, docs_embs, threshold, top_k)
+        if similarities:
+            text_resources = [doc for doc, score in similarities]
+            text_resources = "\n".join(text_resources)
+        else:
+            text_resources = "File was given but no relevant info found."
     else:
-        text_resources = "No relevant resource found."
+        # If no file is given
+        text_resources = "User did not provide any file."
     # Get response from OpenAI using the text resources
     answer = get_response_from_openai(user_prompt=user_query, resources=text_resources)
     return answer
