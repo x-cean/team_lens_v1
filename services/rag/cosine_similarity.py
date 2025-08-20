@@ -28,7 +28,7 @@ def cosine_similarity_manual(vec1, vec2):
     return dot_product / (norm_vec1 * norm_vec2)
 
 
-def find_similar_items_manual(query, docs, threshold=0.5, top_k=2):
+def find_similar_items_manual(query, docs, threshold=0.4, top_k=3):
     """Find the most similar items based on cosine similarity."""
     docs_similarity_scores = []
     for doc in docs:

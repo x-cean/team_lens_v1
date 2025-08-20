@@ -3,6 +3,7 @@ from .parser import extract_text_from_pdf, file_loader, docs_to_texts
 from .text_chunkers import recursive_char_text_split
 from .text_embedder import openai_text_embedder
 from .cosine_similarity import similarity_matcher_skl, cosine_similarity_manual, find_similar_items_manual
+from ..llm.open_ai_functions import get_response_from_openai
 
 
 def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:
@@ -29,21 +30,29 @@ def query_embedding(query: str) -> tuple[str, List[float]]:
     return result
 
 
-def find_similarities(query_embedding: tuple[str, List[float]],
-                      doc_embeddings: List[tuple[str, List[float]]],
-                      threshold=0.5, top_k=2) -> List[tuple[str, float]]:
-    """
-    Finds the most similar document embeddings to the query embedding.
-    """
-    sorted_similarities = find_similar_items_manual(query_embedding, doc_embeddings, threshold, top_k)
-    return sorted_similarities
+# def find_similarities(query_embedding: tuple[str, List[float]],
+#                       doc_embeddings: List[tuple[str, List[float]]],
+#                       threshold=0.4, top_k=3) -> List[tuple[str, float]]:
+#     """
+#     Finds the most similar document embeddings to the query embedding.
+#     """
+#     sorted_similarities = find_similar_items_manual(query_embedding, doc_embeddings, threshold, top_k)
+#     return sorted_similarities
 
 
 def rag_workflow_1(pdf_path: str, user_query: str,
-                   chunk_size: int = 600, chunk_overlap: int = 0,
-                     threshold: float = 0.4, top_k: int = 3) -> List[tuple[str, float]]:
+                     threshold: float = 0.4, top_k: int = 3) -> str:
     docs_embs = file_embeddings(pdf_path)
     query_emb = query_embedding(user_query)
-    similarities = find_similarities(query_emb, docs_embs, threshold, top_k)
+    similarities = find_similar_items_manual(query_emb, docs_embs, threshold, top_k)
+    if similarities:
+        text_resources = [doc for doc, score in similarities]
+        text_resources = "\n".join(text_resources)
+    else:
+        text_resources = "No relevant resource found."
+    # Get response from OpenAI using the text resources
+    answer = get_response_from_openai(user_prompt=user_query, resources=text_resources)
+    return answer
+
 
 
