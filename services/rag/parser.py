@@ -1,4 +1,17 @@
 from pypdf import PdfReader
+from langchain_docling import DoclingLoader
+
+
+def file_loader(file_path: str):
+    """
+    Loads a file and returns its content.
+    """
+    loader = DoclingLoader(file_path=file_path)
+    docs = loader.load()
+    for d in docs[:3]:
+        print(f"- {d.page_content=}")
+        print(type(d))
+    return docs
 
 
 def extract_text_from_pdf(pdf_path):
