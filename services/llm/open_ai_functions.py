@@ -1,12 +1,14 @@
 import openai
+import time
 from team_lens_v1.config import OPENAI_API_KEY
 from team_lens_v1.logger import logger
 from .prompt_settings import AI_ROLE_TRIAL, AI_ROLE_TRIAL_SHORT_BACKUP
 
 
-def get_response_from_openai(user_prompt, resources="No resources provided.", model="gpt-5-mini"):
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
-    client = openai.OpenAI(api_key=OPENAI_API_KEY)
+
+def get_response_from_openai(user_prompt, resources="No resources provided.", model="gpt-5-mini"):
 
     # Specify the model to use
     model = model
@@ -16,7 +18,9 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         return "Error: Unsupported model selected."
 
     # Generate a response using the OpenAI API
-    elif model =="gpt-5-mini":
+    t0 = time.perf_counter()
+
+    if model =="gpt-5-mini":
         response = client.responses.create(
             model=model,
             input=[
@@ -40,10 +44,20 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
             max_output_tokens=600
         )
 
+    latency = time.perf_counter() - t0
+    logger.info(f"OpenAI response latency: {latency:.2f} seconds")
+
+    usage = getattr(response, "usage", None)
+    usage_dict = {
+        "prompt_tokens": getattr(usage, "prompt_tokens", None) if usage else None,
+        "completion_tokens": getattr(usage, "completion_tokens", None) if usage else None,
+        "total_tokens": getattr(usage, "total_tokens", None) if usage else None,
+    }
+
     # Return the generated text
     answer = response.output_text
     logger.info(f"OpenAI response: {answer}")
-    return answer
+    return answer, response
 
 
 # print(get_response_from_openai("When is the meeting tomorrow?"))
