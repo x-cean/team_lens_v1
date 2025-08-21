@@ -3,6 +3,7 @@ import time
 from team_lens_v1.config import OPENAI_API_KEY
 from team_lens_v1.logger import logger
 from .prompt_settings import AI_ROLE_TRIAL, AI_ROLE_TRIAL_SHORT_BACKUP
+from .llm_eval_data import log_eval_data
 
 
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
@@ -20,13 +21,15 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
     # Generate a response using the OpenAI API
     t0 = time.perf_counter()
 
+    prompt_input = [
+                {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
+                {"role": "user", "content": user_prompt}
+            ]
+
     if model =="gpt-5-mini":
         response = client.responses.create(
             model=model,
-            input=[
-                {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
-                {"role": "user", "content": user_prompt}
-            ],
+            input=prompt_input,
             tools=[{"type": "web_search_preview"}],
             reasoning={"effort": "low"},
             text={"verbosity": "low"},
@@ -35,28 +38,35 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
     else:
         response = client.responses.create(
             model=model,
-            input=[
-                {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
-                {"role": "user", "content": user_prompt}
-            ],
+            input=prompt_input,
             tools=[{"type": "web_search_preview"}],
-            temperature=0.3,
-            max_output_tokens=600
+            temperature=0.2,
+            max_output_tokens=1000
         )
 
     latency = time.perf_counter() - t0
     logger.info(f"OpenAI response latency: {latency:.2f} seconds")
 
+    # Get usage information
     usage = getattr(response, "usage", None)
-    usage_dict = {
-        "prompt_tokens": getattr(usage, "prompt_tokens", None) if usage else None,
-        "completion_tokens": getattr(usage, "completion_tokens", None) if usage else None,
-        "total_tokens": getattr(usage, "total_tokens", None) if usage else None,
-    }
+    input_tokens = getattr(usage, "input_tokens", None) if usage else None
+    output_tokens = getattr(usage, "output_tokens", None) if usage else None
+    total_tokens = getattr(usage, "total_tokens", None) if usage else None
 
     # Return the generated text
     answer = response.output_text
     logger.info(f"OpenAI response: {answer}")
+
+    # Log evaluation data
+    log_eval_data(
+        model=model,
+        prompt=prompt_input,
+        output_text=answer,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        total_tokens=total_tokens,
+        latency=latency
+    )
     return answer, response
 
 
