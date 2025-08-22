@@ -2,7 +2,7 @@ from pypdf import PdfReader
 from langchain_docling import DoclingLoader
 
 
-def file_loader(file_path: str):
+def docling_file_loader(file_path: str):
     """
     Loads a file get its content, chunk and return as a list of langchain documents with langchain_docling
     """

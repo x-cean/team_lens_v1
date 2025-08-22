@@ -1,6 +1,6 @@
 import io
 from typing import List
-from .parser import extract_text_from_pdf, file_loader, docs_to_texts
+from .parser import extract_text_from_pdf, docling_file_loader, docs_to_texts
 from .text_chunkers import recursive_char_text_split
 from .text_embedder import openai_text_embedder
 from .cosine_similarity import similarity_matcher_skl, cosine_similarity_manual, find_similar_items_manual
@@ -12,7 +12,7 @@ def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:
     Converts a PDF file to a list of embeddings.
     """
     # Extract content and create chunked docs
-    docs = file_loader(file_path)
+    docs = docling_file_loader(file_path)
 
     # Turn docs into text strings
     texts = docs_to_texts(docs)
