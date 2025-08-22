@@ -47,7 +47,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         response = client.responses.create(
             model=model,
             input=prompt_input,
-            tools=[{"type": "web_search_preview"}],
+            tools=tools,
             reasoning={"effort": reasoning_effort},
             text={"verbosity": text_verbosity},
             max_output_tokens=max_output_tokens
@@ -69,7 +69,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         response = client.responses.create(
             model=model,
             input=prompt_input,
-            tools=[{"type": "web_search_preview"}],
+            tools=tools,
             temperature=temperature,
             max_output_tokens=max_output_tokens
         )
