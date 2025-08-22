@@ -1,13 +1,14 @@
 import json
 import os
 
-def log_eval_data(model: str, prompt: str, output_text: str, latency: float, input_tokens: int,
+def log_eval_data(model: str, model_setup: dict, prompt: str | list, output_text: str, latency: float, input_tokens: int,
                   output_tokens: int, total_tokens: int) -> None:
 
     file_path = "data/evals/llm_eval_data.json"
 
     eval_data_dict = {
         "model": model,
+        "model_setup": model_setup,
         "prompt": prompt,
         "output_text": output_text,
         "latency": latency,

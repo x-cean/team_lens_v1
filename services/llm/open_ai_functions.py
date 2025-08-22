@@ -9,7 +9,10 @@ from .llm_eval_data import log_eval_data
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 
-def get_response_from_openai(user_prompt, resources="No resources provided.", model="gpt-5-mini"):
+def get_response_from_openai(user_prompt, resources="No resources provided.", model="gpt-5-mini",
+                             reasoning_effort="low", text_verbosity="low",
+                             temperature=0.2, max_output_tokens=1000,
+                             web_search_preview = True):
 
     # Specify the model to use
     model = model
@@ -19,7 +22,6 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         return "Error: Unsupported model selected."
 
     # Generate a response using the OpenAI API
-    t0 = time.perf_counter()
 
     prompt_input = [
                 {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
@@ -27,21 +29,49 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
             ]
 
     if model =="gpt-5-mini":
+
+        if web_search_preview:
+            tools = [{"type": "web_search_preview"}]
+        else:
+            tools = None
+
+        model_setup = {
+            "reasoning_effort": reasoning_effort,
+            "text_verbosity": text_verbosity,
+            "max_output_tokens": max_output_tokens,
+            "tools": tools
+        }
+
+        t0 = time.perf_counter()
+
         response = client.responses.create(
             model=model,
             input=prompt_input,
             tools=[{"type": "web_search_preview"}],
-            reasoning={"effort": "low"},
-            text={"verbosity": "low"},
-            max_output_tokens=1000
+            reasoning={"effort": reasoning_effort},
+            text={"verbosity": text_verbosity},
+            max_output_tokens=max_output_tokens
         )
     else:
+        if web_search_preview:
+            tools = [{"type": "web_search_preview"}]
+        else:
+            tools = None
+
+        model_setup = {
+            "temperature": temperature,
+            "max_output_tokens": max_output_tokens,
+            "tools": tools
+        }
+
+        t0 = time.perf_counter()
+
         response = client.responses.create(
             model=model,
             input=prompt_input,
             tools=[{"type": "web_search_preview"}],
-            temperature=0.2,
-            max_output_tokens=1000
+            temperature=temperature,
+            max_output_tokens=max_output_tokens
         )
 
     latency = time.perf_counter() - t0
@@ -55,11 +85,12 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
 
     # Return the generated text
     answer = response.output_text
-    logger.info(f"OpenAI response: {answer}")
+    logger.info(f"OpenAI response: {response}")
 
     # Log evaluation data
     log_eval_data(
         model=model,
+        model_setup=model_setup,
         prompt=prompt_input,
         output_text=answer,
         input_tokens=input_tokens,
@@ -67,7 +98,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         total_tokens=total_tokens,
         latency=latency
     )
-    return answer, response
+    return answer
 
 
 # print(get_response_from_openai("When is the meeting tomorrow?"))
