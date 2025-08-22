@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Tuple
+from team_lens_v1.logger import logger
 
 
 ### todo: vector database
@@ -36,6 +37,9 @@ def find_similar_items_manual(query, docs, threshold=0.4, top_k=3):
         docs_similarity_scores.append((doc[0], similarity))
     # Sort the documents by similarity score in descending order
     docs_similarity_scores.sort(key=lambda x: x[1], reverse=True)
+    # Log info of 3 most similar documents session found
+    for doc, similarity in docs_similarity_scores[:3]:
+        logger.info(f"Text: {doc[:100]}, Similarity Score: {similarity}.4f")# Log first 100 characters of each doc
     # Filter out items below the threshold
     filtered_results = \
         [(doc, score) for doc, score in docs_similarity_scores if score > threshold][:top_k]
