@@ -15,10 +15,15 @@ embedding_function = OpenAIEmbeddingFunction(
 
 # create a collection
 collection = chroma_client.create_collection(
-    name="test_collection",
+    name="workspace_collection",
     embedding_function=embedding_function
 )
 
+### todo: think about structure and meta data:
+# id
+# text
+# vector
+# metadata: doc_id, chunk_id, source - file_path or url
 
 
 

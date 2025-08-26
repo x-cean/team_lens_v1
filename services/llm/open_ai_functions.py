@@ -52,7 +52,8 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
             text={"verbosity": text_verbosity},
             max_output_tokens=max_output_tokens
         )
-    else:
+
+    else: # gpt-4o-mini and gpt-4.1-mini
         if web_search_preview:
             tools = [{"type": "web_search_preview"}]
         else:
@@ -99,6 +100,3 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         latency=latency
     )
     return answer
-
-
-# print(get_response_from_openai("When is the meeting tomorrow?"))

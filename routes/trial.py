@@ -2,14 +2,10 @@ from fastapi import APIRouter, Request, UploadFile, File, Form, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
-import io
 import os
 
 from team_lens_v1.datamanager.models import TrialMessage
 from team_lens_v1.services.rag.workflow_1_rag import rag_workflow_1
-from team_lens_v1.services.rag.parser import extract_text_from_pdf_like_object
-from team_lens_v1.services.rag.simple_rag_pipeline_spacy_embedding_sklearn_similarity_germini \
-    import simple_rag_pipeline
 
 from team_lens_v1.datamanager.sql_postgre_datamanager import PostgresDataManager
 from team_lens_v1.datamanager.sql_database_init import fastapi_postgresql_init
