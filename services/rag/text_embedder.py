@@ -35,5 +35,4 @@ CreateEmbeddingResponse(
     object='list', 
     usage=Usage(prompt_tokens=15, total_tokens=15)
 )
-
 """

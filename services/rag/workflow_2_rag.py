@@ -28,7 +28,7 @@ def get_all_file_paths(path: str) -> List[str]:
 def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:
     """
     Converts a file to a list of embeddings.
-    The output list index can be used as chunk index. #todo: think about it
+    The output list's index can be used as chunk index: for index, result in enumerate(results)
     """
     # Extract content and create chunked docs
     docs = docling_file_loader(file_path)
@@ -36,7 +36,7 @@ def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:
     # Turn docs into text strings
     texts = docs_to_texts(docs)
 
-    # Embed each chunk using OpenAI, if texts in a list of strings
+    # Embed each chunk using OpenAI, if texts is a list of strings
     results = [(text, openai_text_embedder(text)[0].embedding) for text in texts]
     return results
 
