@@ -5,7 +5,7 @@ from pydantic import EmailStr, model_validator
 from sqlmodel import Field, Relationship, SQLModel
 
 
-"""models made using sqlmodel"""
+"""user chat msg models made using sqlmodel"""
 # user, shared properties
 class UserBase(SQLModel):
     name: str = Field(unique=True, min_length=3, max_length=30)
@@ -110,6 +110,8 @@ class ChatsPublic(SQLModel):
     data: list[ChatPublic]
     count: int
 
+
+"""resource workspace models made using sqlmodel"""
 # resource file relevant models
 class ResourceFile(SQLModel, table=True): #todo: for now keep it like this
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
@@ -145,6 +147,8 @@ class Workspace(WorkspaceBase, table=True): #todo:working on it
     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
     resource_files: list[ResourceFile] = Relationship(back_populates="workspace", cascade_delete=True)
 
+
+"""trial chat msg models made using sqlmodel"""
 # trial page models - no login, no history
 class TrialMessage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
