@@ -17,9 +17,8 @@ def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:
     # Turn docs into text strings
     texts = docs_to_texts(docs)
 
-    # Embed each chunk using OpenAI
-    results = [(text, openai_text_embedder(text)) for text in texts]
-
+    # Embed each chunk using OpenAI, if texts in a list of strings
+    results = [(text, openai_text_embedder(text)[0].embedding) for text in texts]
     return results
 
 
@@ -27,7 +26,8 @@ def query_embedding(query: str) -> tuple[str, List[float]]:
     """
     Converts a user query to an embedding.
     """
-    result = (query, openai_text_embedder(query))
+    embedding_result = openai_text_embedder(query)[0].embedding
+    result = (query, embedding_result)
     return result
 
 
