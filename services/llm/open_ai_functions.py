@@ -13,13 +13,16 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
                              reasoning_effort="low", text_verbosity="low",
                              temperature=0.2, max_output_tokens=1000,
                              web_search_preview = True):
-
+    """
+    Get a response from OpenAI's GPT model, with optional web search preview and parameter settings
+    Evaluation data is logged for analysis
+    """
     # Specify the model to use
     model = model
 
     if model not in ["gpt-5-mini", "gpt-4o-mini", "gpt-4.1-mini"]:
         logger.error(f"Model {model} is not supported. Supported models are: gpt-5-mini, gpt-4o-mini, gpt-4.1-mini.")
-        return "Error: Unsupported model selected."
+        return "Error: Unsupported openai model selected."  ### todo: how to handle error properly?
 
     # Generate a response using the OpenAI API
 
@@ -78,15 +81,15 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
     latency = time.perf_counter() - t0
     logger.info(f"OpenAI response latency: {latency:.2f} seconds")
 
+    # Get the response text
+    answer = response.output_text
+    logger.info(f"OpenAI response: {response}")
+
     # Get usage information
     usage = getattr(response, "usage", None)
     input_tokens = getattr(usage, "input_tokens", None) if usage else None
     output_tokens = getattr(usage, "output_tokens", None) if usage else None
     total_tokens = getattr(usage, "total_tokens", None) if usage else None
-
-    # Return the generated text
-    answer = response.output_text
-    logger.info(f"OpenAI response: {response}")
 
     # Log evaluation data
     log_eval_data(
@@ -99,4 +102,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         total_tokens=total_tokens,
         latency=latency
     )
+
+    # return output text for further use
     return answer
+
