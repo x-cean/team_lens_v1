@@ -62,19 +62,13 @@ class Message(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
 
     # todo: only get sender_id when is_system is false?
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate_sender_id
-
-    @classmethod
-    def validate_sender_id(cls, values):
-        is_system = values.get("is_system")
-        sender_id = values.get("sender_id")
-        if not is_system and sender_id is None:
-            raise ValueError("sender_id is required when is_system is False")
-        elif is_system and sender_id is not None:
-            raise ValueError("sender_id is not required when is_system is True")
-        return values
+    @model_validator(mode="after")
+    def check_sender(self) -> "Message":
+        if not self.is_system and not self.sender_id:
+            raise ValueError("A non-system message must have a sender_id.")
+        if self.is_system and self.sender_id:
+            raise ValueError("A system message cannot have a sender_id.")
+        return self
 
     def __repr__(self):
         return f"Message, created_at: {self.created_at})"
@@ -116,6 +110,42 @@ class ChatsPublic(SQLModel):
     data: list[ChatPublic]
     count: int
 
+# resource file relevant models
+class ResourceFile(SQLModel, table=True): #todo: for now keep it like this
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    file_path: str = Field(unique=True, min_length=3, max_length=255)
+    name: str = Field(min_length=3, max_length=100)
+    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    workspace_id: int | None = Field(foreign_key="workspace.id", nullable=True, ondelete="SET NULL")
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    def __repr__(self):
+        return f"ResourceFile(name: {self.name}, created_at: {self.created_at})"
+    def __str__(self):
+        return f"ResourceFile(name: {self.name}, created_at: {self.created_at})"
+
+class ResourceFilePublic(SQLModel):
+    id: uuid.UUID
+    name: str
+    created_at: datetime
+
+class WorkspaceBase(SQLModel):
+    name: str = Field(unique=True, min_length=3, max_length=30)
+    description: str | None = None
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    def __repr__(self):
+        return f"Workspace(name: {self.name}, created_at: {self.created_at})"
+
+    def __str__(self):
+        return f"Workspace(name: {self.name}, created_at: {self.created_at})"
+
+class Workspace(WorkspaceBase, table=True): #todo:working on it
+    id: int | None = Field(default=None, primary_key=True)
+    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    resource_files: list[ResourceFile] = Relationship(back_populates="workspace", cascade_delete=True)
+
+# trial page models - no login, no history
 class TrialMessage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     text: str
