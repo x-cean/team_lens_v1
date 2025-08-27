@@ -16,7 +16,6 @@ def openai_text_embedder(text: str | List[str]) -> List:
         input=text,
         model="text-embedding-3-small"
     )
-    print(response)
     return response.data
 
 
