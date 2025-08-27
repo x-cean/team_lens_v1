@@ -27,7 +27,8 @@ def get_all_file_paths(path: str) -> List[str]:
 
 def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:
     """
-    Converts a PDF file to a list of embeddings.
+    Converts a file to a list of embeddings.
+    The output list index can be used as chunk index. #todo: think about it
     """
     # Extract content and create chunked docs
     docs = docling_file_loader(file_path)
