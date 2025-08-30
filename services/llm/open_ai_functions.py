@@ -1,5 +1,6 @@
 import openai
 import time
+from typing import List
 from team_lens_v1.config import OPENAI_API_KEY
 from team_lens_v1.logger import logger
 from .prompt_settings import AI_ROLE_TRIAL, AI_ROLE_TRIAL_SHORT_BACKUP
@@ -7,6 +8,21 @@ from .llm_eval_data import log_eval_data
 
 
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
+
+
+def add_user_prompt_and_resources(user_prompt, resources="No resources provided."):
+    messages = [
+        {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
+        {"role": "user", "content": user_prompt}
+    ]
+    return messages
+
+
+def update_messages(new_messages: List[dict], messages=None):
+    if messages is None:
+        messages = []
+    messages.extend(new_messages)
+    return messages
 
 
 def get_response_from_openai(user_prompt, resources="No resources provided.", model="gpt-5-mini",
@@ -26,10 +42,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
 
     # Generate a response using the OpenAI API
 
-    prompt_input = [
-                {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
-                {"role": "user", "content": user_prompt}
-            ]
+    messages = add_resource_to_messages(resources, user_prompt)
 
     if model =="gpt-5-mini":
 
@@ -49,7 +62,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
 
         response = client.responses.create(
             model=model,
-            input=prompt_input,
+            input=messages,
             tools=tools,
             reasoning={"effort": reasoning_effort},
             text={"verbosity": text_verbosity},
@@ -105,4 +118,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
 
     # return output text for further use
     return answer
+
+
+
 
