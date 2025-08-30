@@ -32,6 +32,9 @@
 
 
     <script>
+        // Variable to store chatId for the current session (not persisted)
+        let chatId = null;
+
         // Drag and drop for file upload
         const dropZone = document.getElementById('drop_zone');
         const fileInput = document.getElementById('fileInput');
@@ -47,36 +50,45 @@
         const chat = document.getElementById('chat');
         document.getElementById('chatForm').onsubmit = async function(e) {
             e.preventDefault();
+
+            // Get user message and display it in the chat
             const msg = document.getElementById('message').value;
             chat.innerHTML += `<div class="chat-msg user"><div class="bubble">${msg}</div></div>`;
             document.getElementById('message').value = '';
             chat.scrollTop = chat.scrollHeight;
 
+            // Prepare form data for sending
             const formData = new FormData();
             formData.append('question', msg);
             if (fileInput.files[0]) {
                 formData.append('file', fileInput.files[0]);
             }
-            // Add chat_id if present
-            const chatId = localStorage.getItem('chat_id');
+
+            // Only append chat_id if it exists (for follow-up messages)
             if (chatId) {
                 formData.append('chat_id', chatId);
             }
 
+            // Choose endpoint: /ask for new chat, /ask/{chatId} for ongoing chat
             const url = chatId ? `/ask/${chatId}` : '/ask';
 
+            // Send the request and get the response
             const res = await fetch(url, { method: 'POST', body: formData });
             const data = await res.json();
+
+            // If backend returns a chat_id, save it for future messages
             if (data.chat_id) {
-                localStorage.setItem('chat_id', data.chat_id);
-}
-            // Convert Markdown to HTML (preserves code blocks and embedded HTML)
+                chatId = data.chat_id;
+            }
+
+            // Convert Markdown answer to HTML and sanitize it
             const htmlStr = marked.parse(data.answer);
-            // Sanitize the resulting HTML
             const safeHTML = DOMPurify.sanitize(htmlStr);
+
+            // Display bot response in the chat
             chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${safeHTML}</div></div>`;
             chat.scrollTop = chat.scrollHeight;
         };
-        </script>
+    </script>
 </body>
 </html>
