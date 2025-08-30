@@ -112,41 +112,41 @@ class ChatsPublic(SQLModel):
 
 
 """resource workspace models made using sqlmodel"""
-# resource file relevant models
-class ResourceFile(SQLModel, table=True): #todo: for now keep it like this
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    file_path: str = Field(unique=True, min_length=3, max_length=255)
-    name: str = Field(min_length=3, max_length=100)
-    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
-    workspace_id: int | None = Field(foreign_key="workspace.id", nullable=True, ondelete="SET NULL")
-    created_at: datetime = Field(default_factory=datetime.now)
-
-    def __repr__(self):
-        return f"ResourceFile(name: {self.name}, created_at: {self.created_at})"
-    def __str__(self):
-        return f"ResourceFile(name: {self.name}, created_at: {self.created_at})"
-
-class ResourceFilePublic(SQLModel):
-    id: uuid.UUID
-    name: str
-    created_at: datetime
-
-class WorkspaceBase(SQLModel):
-    name: str = Field(unique=True, min_length=3, max_length=30)
-    description: str | None = None
-    created_at: datetime = Field(default_factory=datetime.now)
-
-    def __repr__(self):
-        return f"Workspace(name: {self.name}, created_at: {self.created_at})"
-
-    def __str__(self):
-        return f"Workspace(name: {self.name}, created_at: {self.created_at})"
-
-class Workspace(WorkspaceBase, table=True): #todo:working on it
-    id: int | None = Field(default=None, primary_key=True)
-    owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
-    resource_files: list[ResourceFile] = Relationship(back_populates="workspace", cascade_delete=True)
-
+# # resource file relevant models
+# class ResourceFile(SQLModel, table=True): #todo: for now keep it like this
+#     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+#     file_path: str = Field(unique=True, min_length=3, max_length=255)
+#     name: str = Field(min_length=3, max_length=100)
+#     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+#     workspace_id: int | None = Field(foreign_key="workspace.id", nullable=True, ondelete="SET NULL")
+#     created_at: datetime = Field(default_factory=datetime.now)
+#
+#     def __repr__(self):
+#         return f"ResourceFile(name: {self.name}, created_at: {self.created_at})"
+#     def __str__(self):
+#         return f"ResourceFile(name: {self.name}, created_at: {self.created_at})"
+#
+# class ResourceFilePublic(SQLModel):
+#     id: uuid.UUID
+#     name: str
+#     created_at: datetime
+#
+# class WorkspaceBase(SQLModel):
+#     name: str = Field(unique=True, min_length=3, max_length=30)
+#     description: str | None = None
+#     created_at: datetime = Field(default_factory=datetime.now)
+#
+#     def __repr__(self):
+#         return f"Workspace(name: {self.name}, created_at: {self.created_at})"
+#
+#     def __str__(self):
+#         return f"Workspace(name: {self.name}, created_at: {self.created_at})"
+#
+# class Workspace(WorkspaceBase, table=True): #todo:working on it
+#     id: int | None = Field(default=None, primary_key=True)
+#     owner_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+#     resource_files: list[ResourceFile] = Relationship(back_populates="workspace", cascade_delete=True)
+#
 
 """trial chat msg models made using sqlmodel"""
 # trial page models - no login, no history
