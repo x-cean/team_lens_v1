@@ -3,29 +3,28 @@ import time
 from typing import List
 from team_lens_v1.config import OPENAI_API_KEY
 from team_lens_v1.logger import logger
-from .prompt_settings import AI_ROLE_TRIAL, AI_ROLE_TRIAL_SHORT_BACKUP
+from .prompt_settings import AI_ROLE_TRIAL, AI_ROLE_TRIAL_SHORT_BACKUP, SYSTEM_PROMPT_TRIAL
 from .llm_eval_data import log_eval_data
 
 
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 
-def add_user_prompt_and_resources(user_prompt, resources="No resources provided."):
-    messages = [
-        {"role": "system", "content": AI_ROLE_TRIAL_SHORT_BACKUP + resources},
-        {"role": "user", "content": user_prompt}
-    ]
-    return messages
+def format_user_message(user_prompt: str, resources: str = "No resources provided."):
+    return {"role": "user", "content": user_prompt + "```Resources: " + resources + "```"}
 
 
 def update_messages(new_messages: List[dict], messages=None):
     if messages is None:
-        messages = []
+        messages = [{"role": "system", "content": SYSTEM_PROMPT_TRIAL}]
     messages.extend(new_messages)
     return messages
 
 
-def get_response_from_openai(user_prompt, resources="No resources provided.", model="gpt-5-mini",
+def get_response_from_openai(user_prompt,
+                             resources="No resources provided.",
+                             messages=None,
+                             model="gpt-5-mini",
                              reasoning_effort="low", text_verbosity="low",
                              temperature=0.2, max_output_tokens=1000,
                              web_search_preview = True):
@@ -40,9 +39,10 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
         logger.error(f"Model {model} is not supported. Supported models are: gpt-5-mini, gpt-4o-mini, gpt-4.1-mini.")
         return "Error: Unsupported openai model selected."  ### todo: how to handle error properly?
 
-    # Generate a response using the OpenAI API
+    # Format the user message
+    user_message = format_user_message(user_prompt, resources)
 
-    messages = add_resource_to_messages(resources, user_prompt)
+    messages = update_messages([user_message], messages)
 
     if model =="gpt-5-mini":
 
@@ -85,7 +85,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
 
         response = client.responses.create(
             model=model,
-            input=prompt_input,
+            input=messages,
             tools=tools,
             temperature=temperature,
             max_output_tokens=max_output_tokens
@@ -108,7 +108,7 @@ def get_response_from_openai(user_prompt, resources="No resources provided.", mo
     log_eval_data(
         model=model,
         model_setup=model_setup,
-        prompt=prompt_input,
+        prompt=messages,
         output_text=answer,
         input_tokens=input_tokens,
         output_tokens=output_tokens,
