@@ -65,3 +65,42 @@ async def ask(
     data_manager.save_trial_message(an_answer_message)
 
     return JSONResponse({"answer": answer, "chat_id": chat_id})
+
+
+@router.post("/ask/{chat_id: int}")
+async def ask(
+    file: UploadFile | None = File(None),
+    question: str = Form(...),
+    session: Session = Depends(fastapi_postgresql_init)
+):
+    content = await file.read() if file else None
+    ### todo: handle the upload, or maybe input website directly and so on
+    # for pdf:
+    # write a file temporarily to disk if file is provided
+    if content is not None:
+        with open ("data/test_examples/temp_file.pdf", "wb") as f:
+            if content:
+                f.write(content)
+    # get the last 10 messages from the chat history
+    data_manager = PostgresDataManager(session=session)
+    chat_history = data_manager.get_trial_chat_history_by_id(chat_id)
+    # call the function
+    answer = rag_workflow_1(user_query=question,
+                            pdf_path="data/test_examples/temp_file.pdf" if content else None,
+                            threshold=0.4, top_k=3)
+
+    # save the user message
+    a_question_message = TrialMessage(
+        chat_id=chat_id,
+        text=question
+    )
+    an_answer_message = TrialMessage(
+        chat_id=chat_id,
+        text=answer,
+        is_system=True,
+        is_user=False
+    )
+    data_manager.save_trial_message(a_question_message)
+    data_manager.save_trial_message(an_answer_message)
+
+    return JSONResponse({"answer": answer, "chat_id": chat_id})

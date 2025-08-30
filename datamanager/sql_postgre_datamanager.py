@@ -3,7 +3,7 @@ import uuid
 
 from sqlmodel import SQLModel, create_engine, Session, select, func
 from team_lens_v1.logger import logger
-from typing import Any
+from typing import Any, List
 
 from .datamanager_interface import DataManagerInterface
 from .models import User, UsersPublic, Chat, ChatsPublic, Message, TrialChat, TrialMessage
@@ -105,6 +105,17 @@ class PostgresDataManager(DataManagerInterface):
         self.session.commit()
         self.session.refresh(trial_chat)
         return trial_chat
+
+    def get_trial_chat_history_by_id(self, chat_id: int):
+        """
+        Retrieves the chat history for a given trial chat ID.
+        """
+        statement = select(TrialMessage).where(TrialMessage.chat_id == chat_id).order_by(TrialMessage.created_at)
+        messages = self.session.exec(statement).all()
+        if not messages:
+            logger.warning(f"No messages found for chat ID {chat_id}")
+            return None
+        return messages[-10:]  # return the last 100 messages
 
     def save_trial_message(self, trial_message: TrialMessage) -> TrialMessage:
         """
