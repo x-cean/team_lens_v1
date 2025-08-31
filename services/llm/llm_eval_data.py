@@ -1,10 +1,17 @@
 import json
 import os
+import tempfile
+
 
 def log_eval_data(model: str, model_setup: dict, prompt: str | list, output_text: str, latency: float, input_tokens: int,
                   output_tokens: int, total_tokens: int) -> None:
-
-    file_path = "data/evals/llm_eval_data.json"
+    """
+    Log LLM evaluation data to a JSON file.
+    Writes to the system temporary directory to avoid touching project files,
+    which can trigger auto-reload (watchfiles) in dev servers.
+    """
+    temp_dir = tempfile.gettempdir()
+    file_path = os.path.join(temp_dir, "team_lens_llm_eval_data.json")
 
     eval_data_dict = {
         "model": model,
@@ -26,8 +33,10 @@ def log_eval_data(model: str, model_setup: dict, prompt: str | list, output_text
                 data = []
     else:
         data = []
+
     # Append new data
     data.append(eval_data_dict)
+
     # Write back to file
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)

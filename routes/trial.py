@@ -68,11 +68,12 @@ async def ask(
     return JSONResponse({"answer": answer, "chat_id": chat_id})
 
 
-@router.post("/ask/{chat_id: int}")
+@router.post("/ask/{chat_id}")
 async def ask(
+    chat_id: int,
     file: UploadFile | None = File(None),
     question: str = Form(...),
-    session: Session = Depends(fastapi_postgresql_init)
+    session: Session = Depends(fastapi_postgresql_init),
 ):
     content = await file.read() if file else None
     ### todo: handle the upload, or maybe input website directly and so on
