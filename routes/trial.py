@@ -33,18 +33,33 @@ async def ask(
     chat_id: int | None = Form(None),
     session: Session = Depends(fastapi_postgresql_init)
 ):
+    import os
+    import tempfile
+
     content = await file.read() if file else None
-    ### todo: handle the upload, or maybe input website directly and so on
-    # for pdf:
-    # write a file temporarily to disk if file is provided
-    if content is not None:
-        with open ("data/test_examples/temp_file.pdf", "wb") as f:
-            if content:
-                f.write(content)
+
+    temp_pdf_path = None
+    # Write a temporary file only if non-empty content was provided
+    if content:
+        fd, temp_pdf_path = tempfile.mkstemp(suffix=".pdf", prefix="team_lens_upload_")
+        os.close(fd)
+        with open(temp_pdf_path, "wb") as f:
+            f.write(content)
+
     # call the function
-    answer = rag_workflow_1(user_query=question,
-                            pdf_path="data/test_examples/temp_file.pdf" if content else None,
-                            threshold=0.4, top_k=3)
+    answer = rag_workflow_1(
+        user_query=question,
+        pdf_path=temp_pdf_path if content else None,
+        threshold=0.4,
+        top_k=3,
+    )
+
+    # Clean up temporary file
+    if temp_pdf_path and os.path.exists(temp_pdf_path):
+        try:
+            os.remove(temp_pdf_path)
+        except OSError:
+            pass
 
     #todo: save chat history to a database, currently chatid is always the same???
     data_manager = PostgresDataManager(session=session)
@@ -75,27 +90,44 @@ async def ask(
     question: str = Form(...),
     session: Session = Depends(fastapi_postgresql_init),
 ):
+    import os
+    import tempfile
+
     content = await file.read() if file else None
-    ### todo: handle the upload, or maybe input website directly and so on
-    # for pdf:
-    # write a file temporarily to disk if file is provided
-    if content is not None:
-        with open ("data/test_examples/temp_file.pdf", "wb") as f:
-            if content:
-                f.write(content)
+
+    temp_pdf_path = None
+    if content:
+        fd, temp_pdf_path = tempfile.mkstemp(suffix=".pdf", prefix="team_lens_upload_")
+        os.close(fd)
+        with open(temp_pdf_path, "wb") as f:
+            f.write(content)
+
     # get the latest 10 messages from the chat history and format them with system prompt
     data_manager = PostgresDataManager(session=session)
     chat_history = data_manager.get_trial_chat_history_by_id(chat_id)
     chat_history_system = [{"role": "system", "content": SYSTEM_PROMPT_TRIAL}]
-    chat_history_formatted = [{"role": "user" if msg.is_user else "assistant",
-                               "content": msg.text} for msg in chat_history] if chat_history else None
+    chat_history_formatted = (
+        [{"role": "user" if msg.is_user else "assistant", "content": msg.text} for msg in chat_history]
+        if chat_history
+        else None
+    )
     messages = chat_history_system + chat_history_formatted if chat_history_formatted else None
 
     # call the function
-    answer = rag_workflow_1(user_query=question,
-                            pdf_path="data/test_examples/temp_file.pdf" if content else None,
-                            messages=messages,
-                            threshold=0.4, top_k=3)
+    answer = rag_workflow_1(
+        user_query=question,
+        pdf_path=temp_pdf_path if content else None,
+        messages=messages,
+        threshold=0.4,
+        top_k=3,
+    )
+
+    # Clean up temporary file
+    if temp_pdf_path and os.path.exists(temp_pdf_path):
+        try:
+            os.remove(temp_pdf_path)
+        except OSError:
+            pass
 
     # save the user message
     a_question_message = TrialMessage(
