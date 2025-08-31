@@ -59,7 +59,8 @@ def rag_workflow_1(user_query: str, pdf_path: str | io.BytesIO = None,
         # If no file is given
         text_resources = "User did not provide any file."
     # Get response from OpenAI using the text resources
-    answer = get_response_from_openai(user_prompt=user_query, resources=text_resources, messages=messages)
+    answer = get_response_from_openai(user_prompt=user_query, resources=text_resources,
+                                      model="gpt-5-mini",messages=messages)
     return answer
 
 
