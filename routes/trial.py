@@ -4,9 +4,10 @@ from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 import os
 
-from team_lens_v1.datamanager.models import TrialMessage
 from team_lens_v1.services.rag.workflow_1_rag import rag_workflow_1
+from team_lens_v1.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
+from team_lens_v1.datamanager.models import TrialMessage
 from team_lens_v1.datamanager.sql_postgre_datamanager import PostgresDataManager
 from team_lens_v1.datamanager.sql_database_init import fastapi_postgresql_init
 
@@ -81,12 +82,18 @@ async def ask(
         with open ("data/test_examples/temp_file.pdf", "wb") as f:
             if content:
                 f.write(content)
-    # get the last 10 messages from the chat history
+    # get the latest 10 messages from the chat history and format them with system prompt
     data_manager = PostgresDataManager(session=session)
     chat_history = data_manager.get_trial_chat_history_by_id(chat_id)
+    chat_history_system = [{"role": "system", "content": SYSTEM_PROMPT_TRIAL}]
+    chat_history_formatted = [{"role": "user" if msg.is_user else "assistant",
+                               "content": msg.text} for msg in chat_history] if chat_history else None
+    messages = chat_history_system + chat_history_formatted if chat_history_formatted else None
+
     # call the function
     answer = rag_workflow_1(user_query=question,
                             pdf_path="data/test_examples/temp_file.pdf" if content else None,
+                            messages=messages,
                             threshold=0.4, top_k=3)
 
     # save the user message

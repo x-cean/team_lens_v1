@@ -115,7 +115,27 @@ class PostgresDataManager(DataManagerInterface):
         if not messages:
             logger.warning(f"No messages found for chat ID {chat_id}")
             return None
-        return messages[-10:]  # return the last 100 messages
+        return messages[-10:]  # return the last 10 messages
+
+    def get_trial_chat_by_id(self, chat_id):
+        statement = select(TrialChat).where(TrialChat.id == chat_id)
+        trial_chat = self.session.exec(statement).first()
+        return trial_chat
+
+    def get_trial_chat_history_by_id_2(self, chat_id: int):
+        """
+        Retrieves the chat history for a given trial chat ID.
+        """
+        trial_chat = self.get_trial_chat_by_id(chat_id)
+        if not trial_chat:
+            logger.warning(f"No trial chat found for chat ID {chat_id}")
+            return None
+        messages = trial_chat.messages
+        if not messages:
+            logger.warning(f"No messages found for chat ID {chat_id}")
+            return None
+        return messages[-10:]  # return the last 10 messages
+
 
     def save_trial_message(self, trial_message: TrialMessage) -> TrialMessage:
         """
