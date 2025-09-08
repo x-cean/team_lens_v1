@@ -10,7 +10,7 @@ from .llm_eval_data import log_eval_data
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 
-def format_user_message(user_prompt: str, resources: str = "No resources provided."):
+def format_user_message(user_prompt: str, resources: str = "No resource given."):
     return {"role": "user", "content": user_prompt + "```Resources: " + resources + "```"}
 
 
@@ -22,7 +22,7 @@ def update_messages(new_messages: List[dict], messages=None):
 
 
 def get_response_from_openai(user_prompt,
-                             resources="No resources provided.",
+                             resources="No resource given.",
                              messages=None,
                              model="gpt-5-mini",
                              reasoning_effort="low", text_verbosity="low",
