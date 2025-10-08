@@ -87,7 +87,7 @@ async def ask(
 async def ask(
     chat_id: int,
     file: UploadFile | None = File(None),
-    question: str = Form(...),
+    question: str = Form(...), # better go with question: Annotated[str, Form()] etc.
     session: Session = Depends(fastapi_postgresql_init),
 ):
     import os
