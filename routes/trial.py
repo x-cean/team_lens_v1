@@ -25,7 +25,16 @@ def trial_page(request: Request):
 def trial_post(request: Request):
     pass
 
+"""
+better use annotation for File/Form/Depends
 
+from typing import Annotated
+
+file: Annotated[UploadFile | None, File(None)],
+question: Annotated[str, Form(...)],
+chat_id: Annotated[int | None, Form(None)],
+session: Annotated[Session, Depends(fastapi_postgresql_init)]
+"""
 @router.post("/ask")
 async def ask(
     file: UploadFile | None = File(None),
