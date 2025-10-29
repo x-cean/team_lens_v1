@@ -45,7 +45,7 @@ async def ask(
     import os
     import tempfile
 
-    content = await file.read() if file else None
+    content = file.file.read() if file else None
 
     temp_pdf_path = None
     # Write a temporary file only if non-empty content was provided
@@ -70,7 +70,6 @@ async def ask(
         except OSError:
             pass
 
-    #todo: save chat history to a database, currently chatid is always the same???
     data_manager = PostgresDataManager(session=session)
     if chat_id is None:
         a_trial_chat = data_manager.create_trial_chat()
