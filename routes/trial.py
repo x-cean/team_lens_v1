@@ -25,7 +25,16 @@ def trial_page(request: Request):
 def trial_post(request: Request):
     pass
 
+"""
+better use annotation for File/Form/Depends
 
+from typing import Annotated
+
+file: Annotated[UploadFile | None, File(None)],
+question: Annotated[str, Form(...)],
+chat_id: Annotated[int | None, Form(None)],
+session: Annotated[Session, Depends(fastapi_postgresql_init)]
+"""
 @router.post("/ask")
 async def ask(
     file: UploadFile | None = File(None),
@@ -36,7 +45,7 @@ async def ask(
     import os
     import tempfile
 
-    content = await file.read() if file else None
+    content = file.file.read() if file else None
 
     temp_pdf_path = None
     # Write a temporary file only if non-empty content was provided
@@ -61,7 +70,6 @@ async def ask(
         except OSError:
             pass
 
-    #todo: save chat history to a database, currently chatid is always the same???
     data_manager = PostgresDataManager(session=session)
     if chat_id is None:
         a_trial_chat = data_manager.create_trial_chat()
@@ -87,7 +95,7 @@ async def ask(
 async def ask(
     chat_id: int,
     file: UploadFile | None = File(None),
-    question: str = Form(...),
+    question: str = Form(...), # better go with question: Annotated[str, Form()] etc.
     session: Session = Depends(fastapi_postgresql_init),
 ):
     import os

@@ -34,7 +34,7 @@ class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=40)
 
 
-# todo: user crud
+# todo: refined user crud
 
 
 # user database model, database table inferred from class name
@@ -148,7 +148,7 @@ class ChatsPublic(SQLModel):
 #     resource_files: list[ResourceFile] = Relationship(back_populates="workspace", cascade_delete=True)
 #
 
-"""trial chat msg models made using sqlmodel"""
+"""trial chat models for the trial page, made using sqlmodel"""
 # trial page models - no login, no history
 class TrialMessage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
