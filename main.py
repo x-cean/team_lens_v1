@@ -5,6 +5,8 @@ import os
 
 from routes import home, trial
 
+# cd .. and then export PYTHONPATH=$(pwd)
+
 app = FastAPI()
 
 # TODO: just question, without this line it still works, what is this for?

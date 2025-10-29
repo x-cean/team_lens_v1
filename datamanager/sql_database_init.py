@@ -1,6 +1,6 @@
 from requests import session
 
-from team_lens_v1.config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_DB_PASSWORD, SUPABASE_URL_2
+from team_lens_v1.config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_DB_PASSWORD, SUPABASE_URL_2, SUPABASE_DB_STRING
 from supabase import Client, create_client
 from sqlmodel import SQLModel, create_engine, Session, select
 from fastapi import Depends
@@ -16,7 +16,11 @@ def fastapi_postgresql_init():
         yield postgres_session
 
 def postgresql_init():
-    postgres_engine = create_engine(f"postgresql://postgres:{SUPABASE_DB_PASSWORD}@db.{SUPABASE_URL_2}:5432/postgres")
+    direct_connection_site = f"postgresql://postgres:{SUPABASE_DB_PASSWORD}@db.{SUPABASE_URL_2}:5432/postgres"
+    session_pooler_site = \
+        (f"postgresql://postgres.{SUPABASE_DB_STRING}:{SUPABASE_DB_PASSWORD}"
+         f"@aws-1-eu-north-1.pooler.supabase.com:5432/postgres")
+    postgres_engine = create_engine(session_pooler_site)
     SQLModel.metadata.create_all(postgres_engine)
     postgres_session = Session(postgres_engine)
     return postgres_session
