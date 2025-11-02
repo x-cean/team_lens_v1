@@ -23,52 +23,41 @@ class ChromadbDataManagerBase(ABC):
     def establish_client(self):
         pass
 
-    def get_collection_if_exists(self, collection_name: str):
+    def get_collection_if_exists(self, user_id: str):
         client = self.establish_client()
         try:
-            collection = client.get_collection(name=collection_name)
+            collection = client.get_collection(name=user_id)
             return collection
         except Exception: # todo: change to the specific error
             return None
 
-    def create_collection_with_openai_embedding(self, collection_name: str,
-                                                file_path: str,
-                                                doc_ids: list[str], doc_documents: list[str],
-                                                metadatas_list: list[dict] = None):
+    def create_collection_with_openai_embedding(self):
         client = self.establish_client()
-        logger.info(f"Creating collection {collection_name} for user {self.user_id}.")
+        logger.info(f"Creating collection for user {self.user_id}.")
         collection = client.get_or_create_collection(
-            name=collection_name,
+            name=self.user_id,
             embedding_function=OpenAIEmbeddingFunction(
                 model_name="text-embedding-3-small",
                 api_key=OPENAI_API_KEY
             ),
             metadata={
-                "created_by": self.user_id,
                 "created_at": str(datetime.now()),
-                "source": file_path}
+                "source": "user_collection"}
         )
-        logger.info(f"Collection {collection_name} created successfully.")
-
-        logger.info(f"Adding documents to collection {collection_name}.")
-        collection.add(
-            ids=doc_ids,
-            documents=doc_documents,
-            metadatas=metadatas_list
-        )
-
+        logger.info(f"Collection {self.user_id} created successfully.")
         return collection
 
-    def add_documents_to_collection(self, collection_name: str, ids, documents):
-        collection = self.get_collection_if_exists(collection_name)
+    def add_documents_to_collection(self, file_path: str, doc_ids: list[str], doc_documents: list[str],metadatas_list: list[dict] = None):
+        collection = self.get_collection_if_exists(self.user_id)
         if collection is None:
-            logger.error(f"Collection {collection_name} does not exist.")
-            raise ValueError(f"Collection {collection_name} does not exist.")
+            logger.error(f"Collection {self.user_id} does not exist.")
+            raise ValueError(f"Collection {self.user_id} does not exist.")
         else:
-            logger.info(f"Adding documents to collection {collection_name}.")
+            logger.info(f"Adding documents to collection {self.user_id}.")
             collection.add(
-                ids=ids,
-                documents=documents
+                ids=doc_ids,
+                documents=doc_documents,
+                metadatas=metadatas_list
             )
             return collection
 
