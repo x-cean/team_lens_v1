@@ -1,5 +1,6 @@
 # for dev i ignore the following
 tests.py
+tests2.py
 /my_data/
 /notes/
 /services/rag/backups
