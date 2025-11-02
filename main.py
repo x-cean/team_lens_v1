@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 import os
 
-from routes import home, trial
+from team_lens_v1.routes import home, trial
 
 # cd .. and then export PYTHONPATH=$(pwd)
 
