@@ -22,6 +22,14 @@ def establish_chroma_persistent_client(user_id: str):
     return user_chroma_client
 
 
+def get_collection_if_exists(user_id: str, collection_name: str):
+    client = establish_chroma_persistent_client(user_id)
+    try:
+        collection = client.get_collection(name=collection_name)
+        return collection
+    except chromadb.errors.CollectionNotFoundError:
+        return None
+
 def create_collection_with_openai_embedding(user_id: str, collection_name: str,
                                             file_path: str,
                                             doc_ids: list[str], doc_documents: list[str],
