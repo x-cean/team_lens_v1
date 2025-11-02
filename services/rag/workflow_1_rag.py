@@ -1,6 +1,6 @@
 import io
 from typing import List
-from .parser import extract_text_from_pdf, docling_file_loader, docs_to_texts
+from .parser_old import extract_text_from_pdf, docling_file_loader, docs_to_texts
 from .text_chunkers import recursive_char_text_split
 from .text_embedder import openai_text_embedder
 from .cosine_similarity import similarity_matcher_skl, cosine_similarity_manual, find_similar_items_manual
