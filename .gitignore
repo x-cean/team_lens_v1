@@ -2,6 +2,7 @@
 tests.py
 /data/
 /notes/
+/services/rag/backups
 
 # It was tracked
 .DS_Store

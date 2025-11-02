@@ -1,10 +1,9 @@
 import io
 import os
 from typing import List
-from .parser_1 import extract_text_from_pdf, docling_file_loader, docs_to_texts
-from .text_chunkers import recursive_char_text_split
+from .parser_1 import docling_file_loader, docs_to_texts
 from .text_embedder import openai_text_embedder
-from .cosine_similarity import similarity_matcher_skl, cosine_similarity_manual, find_similar_items_manual
+from .cosine_similarity import find_similar_items_manual
 from ..llm.open_ai_functions import get_response_from_openai
 
 

@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 import os
 
-from team_lens_v1.services.rag.workflow_1_rag import rag_workflow_1
+from team_lens_v1.services.rag.backups.workflow_1_rag import rag_workflow_1
 from team_lens_v1.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
 from team_lens_v1.datamanager.models import TrialMessage

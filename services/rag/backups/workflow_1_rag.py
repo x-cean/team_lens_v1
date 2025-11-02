@@ -1,10 +1,9 @@
 import io
 from typing import List
-from .parser_1 import extract_text_from_pdf, docling_file_loader, docs_to_texts
-from .text_chunkers import recursive_char_text_split
-from .text_embedder import openai_text_embedder
-from .cosine_similarity import similarity_matcher_skl, cosine_similarity_manual, find_similar_items_manual
-from ..llm.open_ai_functions import get_response_from_openai
+from team_lens_v1.services.rag.parser_1 import docling_file_loader, docs_to_texts
+from team_lens_v1.services.rag.text_embedder import openai_text_embedder
+from team_lens_v1.services.rag.cosine_similarity import find_similar_items_manual
+from team_lens_v1.services.llm.open_ai_functions import get_response_from_openai
 
 
 def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:
