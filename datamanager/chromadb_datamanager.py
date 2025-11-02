@@ -34,7 +34,7 @@ class ChromadbDataManagerBase(ABC):
     def create_collection_with_openai_embedding(self, collection_name: str,
                                                 file_path: str,
                                                 doc_ids: list[str], doc_documents: list[str],
-                                                metadata_list: list[dict] = None):
+                                                metadatas_list: list[dict] = None):
         client = self.establish_client()
         logger.info(f"Creating collection {collection_name} for user {self.user_id}.")
         collection = client.get_or_create_collection(
@@ -54,7 +54,7 @@ class ChromadbDataManagerBase(ABC):
         collection.add(
             ids=doc_ids,
             documents=doc_documents,
-            metadatas=metadata_list
+            metadatas=metadatas_list
         )
 
         return collection
