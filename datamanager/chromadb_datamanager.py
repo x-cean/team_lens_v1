@@ -37,8 +37,7 @@ class ChromadbDataManagerBase(ABC):
         collection = client.get_or_create_collection(
             name=self.user_id,
             embedding_function=OpenAIEmbeddingFunction(
-                model_name="text-embedding-3-small",
-                api_key=OPENAI_API_KEY
+                model_name="text-embedding-3-small"
             ),
             metadata={
                 "created_at": str(datetime.now()),

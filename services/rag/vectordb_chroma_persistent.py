@@ -56,7 +56,6 @@ def create_user_collection_with_openai_embedding(client, user_id: str):
         name=user_id,
         embedding_function=OpenAIEmbeddingFunction(
             model_name="text-embedding-3-small",
-            api_key=OPENAI_API_KEY
         ),
         metadata={
             "created_at": str(datetime.now()),
