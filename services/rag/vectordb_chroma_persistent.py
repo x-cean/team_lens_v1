@@ -18,7 +18,7 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
     documents = []
     metadatas_list = []
     for i, doc in enumerate(docs):
-        ids.append(f"{i}")
+        ids.append(f"{i + 1}")
         documents.append(doc.page_content)
         metadata_dict = {"source": doc.metadata.get("source", "unknown")}
         if workspace_id:
