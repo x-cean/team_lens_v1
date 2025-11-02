@@ -38,7 +38,8 @@ def create_collection_with_openai_embedding(user_id: str, collection_name: str,
     collection = client.get_or_create_collection(
         name=collection_name,
         embedding_function=OpenAIEmbeddingFunction(
-            model_name="text-embedding-3-small"
+            model_name="text-embedding-3-small",
+            api_key=OPENAI_API_KEY
         ),
         metadata={
             "created_by": user_id,
