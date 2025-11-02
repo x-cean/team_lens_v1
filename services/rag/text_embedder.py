@@ -1,5 +1,5 @@
 from config import OPENAI_API_KEY
-from .parser_old import extract_text_from_pdf, extract_text_from_pdf_like_object
+from .parser_1 import extract_text_from_pdf, extract_text_from_pdf_like_object
 from openai import OpenAI
 from typing import List
 
