@@ -1,6 +1,8 @@
 from markitdown import MarkItDown
 
 
-md = MarkItDown(enable_plugins=False) # Set to True to enable plugins
-result = md.convert("test.xlsx")
-print(result.text_content)
+def parse_file_from_path_markitdown(file_path: str):
+    md = MarkItDown(enable_plugins=False) # Set to True to enable plugins
+    result = md.convert(file_path)
+    return result.text_content
+
