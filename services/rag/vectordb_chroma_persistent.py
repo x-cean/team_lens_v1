@@ -39,7 +39,8 @@ def create_collection_with_openai_embedding(user_id: str, collection_name: str,
     )
     collection.add(
         ids=doc_ids,
-        documents=doc_documents
+        documents=doc_documents,
+        metadatas=metadata_list
     )
     return collection
 
