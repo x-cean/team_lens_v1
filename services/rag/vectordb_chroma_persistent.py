@@ -1,11 +1,22 @@
 import chromadb
+import os
+
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 from datetime import datetime
 from team_lens_v1.config import OPENAI_API_KEY
 
 
-CHROMA_LOCAL_DATABASE_PATH = "/data/database/chroma_persistent"
+# CHROMA_LOCAL_DATABASE_PATH = "/my_data/database/chroma_persistent"
+# def create_absolute_path(relative_path: str) -> str:
+#     base_dir = os.getcwd()
+#     absolute_path = os.path.join(base_dir, relative_path)
+#     return absolute_path
 
+
+def create_persistent_db_folder_if_not_exist(path: str):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
 
 def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=None,
                                                      workspace_id: str | None=None):
@@ -28,20 +39,19 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
         metadatas_list.append(metadata_dict)
     return ids, documents, metadatas_list
 
-def establish_chroma_persistent_client():
-    user_chroma_client = chromadb.PersistentClient(path=f"{CHROMA_LOCAL_DATABASE_PATH}")
+def establish_chroma_persistent_client(path):
+    path = create_persistent_db_folder_if_not_exist(path)
+    user_chroma_client = chromadb.PersistentClient(path=path)
     return user_chroma_client
 
-def get_user_collection_if_exists(user_id: str):
-    client = establish_chroma_persistent_client()
+def get_user_collection_if_exists(client, user_id: str):
     try:
         collection = client.get_collection(name=user_id)
         return collection
     except Exception as e: # todo: figure out the specific error
         return e
 
-def create_user_collection_with_openai_embedding(user_id: str):
-    client = establish_chroma_persistent_client()
+def create_user_collection_with_openai_embedding(client, user_id: str):
     collection = client.get_or_create_collection(
         name=user_id,
         embedding_function=OpenAIEmbeddingFunction(
@@ -54,11 +64,12 @@ def create_user_collection_with_openai_embedding(user_id: str):
     )
     return collection
 
-def add_documents_to_collection(user_id: str,
+def add_documents_to_user_collection(client,
+                                user_id: str,
                                 doc_ids: list[str],
                                 doc_documents: list[str],
                                 metadatas_list: list[dict] = None):
-    collection = get_user_collection_if_exists(user_id)
+    collection = get_user_collection_if_exists(client, user_id)
     collection.add(
         ids=doc_ids,
         documents=doc_documents,

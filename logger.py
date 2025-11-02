@@ -13,7 +13,7 @@ logging.basicConfig(
 
 logger = logging.getLogger("team_lens_v1")
 
-# Dedicated logger for LLM evaluation data written as JSON lines
+# Dedicated logger for LLM evaluation my_data written as JSON lines
 # We lazily configure it to avoid duplicate handlers on reloads.
 
 def _setup_llm_eval_logger() -> None:
@@ -24,9 +24,9 @@ def _setup_llm_eval_logger() -> None:
     llm_logger.setLevel(logging.INFO)
     llm_logger.propagate = False  # don't mirror into root handlers
 
-    # Resolve path to data/evals/llm_eval_data.json relative to this file
+    # Resolve path to my_data/evals/llm_eval_data.json relative to this file
     base_dir = os.path.dirname(__file__)
-    evals_dir = os.path.join(base_dir, "data", "evals")
+    evals_dir = os.path.join(base_dir, "my_data", "evals")
     os.makedirs(evals_dir, exist_ok=True)
     eval_file = os.path.join(evals_dir, "llm_eval_data.json")
 
@@ -40,6 +40,6 @@ def _setup_llm_eval_logger() -> None:
 
 
 def get_llm_eval_logger() -> logging.Logger:
-    """Return the dedicated logger for LLM eval data (JSON lines)."""
+    """Return the dedicated logger for LLM eval my_data (JSON lines)."""
     _setup_llm_eval_logger()
     return logging.getLogger("llm_eval")

@@ -30,7 +30,7 @@ def get_response_from_openai(user_prompt,
                              web_search_preview = True):
     """
     Get a response from OpenAI's GPT model, with optional web search preview and parameter settings
-    Evaluation data is logged for analysis
+    Evaluation my_data is logged for analysis
     """
     # Specify the model to use
     model = model
@@ -104,7 +104,7 @@ def get_response_from_openai(user_prompt,
     output_tokens = getattr(usage, "output_tokens", None) if usage else None
     total_tokens = getattr(usage, "total_tokens", None) if usage else None
 
-    # Log evaluation data
+    # Log evaluation my_data
     log_eval_data(
         model=model,
         model_setup=model_setup,

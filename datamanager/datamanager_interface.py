@@ -4,8 +4,8 @@ from abc import ABC, abstractmethod
 # ABC (Abstract Base Classes) module - to achieve polymorphism
 class DataManagerInterface(ABC):
     """
-    define the abstract data manager interface methods
-    serves as a blueprint for all data managers
+    define the abstract my_data manager interface methods
+    serves as a blueprint for all my_data managers
     """
 
     @abstractmethod

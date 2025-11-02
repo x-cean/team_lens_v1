@@ -53,6 +53,6 @@ def docs_to_texts(docs: list) -> list:
 #         return "File not found"
 
 
-# example_pdf_path = "../../data/test_examples/Nature_moon.pdf"
+# example_pdf_path = "../../my_data/test_examples/Nature_moon.pdf"
 # text = extract_text_from_pdf(example_pdf_path)
 # print(text)

@@ -9,7 +9,7 @@ from team_lens_v1.config import OPENAI_API_KEY, CHROMA_API_KEY, CHROMA_TENANT_ID
 from team_lens_v1.logger import logger
 
 
-CHROMA_LOCAL_DATABASE_PATH = "/data/database/chroma_persistent"
+CHROMA_LOCAL_DATABASE_PATH = "/my_data/database/chroma_persistent"
 
 
 class ChromadbDataManagerBase(ABC):

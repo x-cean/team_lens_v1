@@ -5,8 +5,8 @@ from team_lens_v1.logger import get_llm_eval_logger
 def log_eval_data(model: str, model_setup: dict, prompt: str | list, output_text: str, latency: float, input_tokens: int,
                   output_tokens: int, total_tokens: int) -> None:
     """
-    Log LLM evaluation data to a JSON file via Python logging.
-    Appends one JSON object per line into team_lens_v1/data/evals/llm_eval_data.json
+    Log LLM evaluation my_data to a JSON file via Python logging.
+    Appends one JSON object per line into team_lens_v1/my_data/evals/llm_eval_data.json
     to avoid rewriting whole files and reduce dev autoreload churn.
     """
     logger = get_llm_eval_logger()
