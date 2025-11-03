@@ -121,12 +121,20 @@ async def ask(
     )
     messages = chat_history_system + chat_history_formatted if chat_history_formatted else None
 
-    # call the function
+    # # call the function workflow 1
+    # answer = rag_workflow_1(
+    #     user_query=question,
+    #     pdf_path=temp_pdf_path if content else None,
+    #     messages=messages,
+    #     threshold=0.4,
+    #     top_k=3,
+    # )
+
+    # call the function workflow 3
     answer = rag_workflow_1(
         user_query=question,
         pdf_path=temp_pdf_path if content else None,
         messages=messages,
-        threshold=0.4,
         top_k=3,
     )
 
