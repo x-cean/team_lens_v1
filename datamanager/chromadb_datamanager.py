@@ -34,7 +34,7 @@ class ChromadbDataManagerBase(ABC):
     def create_collection_with_openai_embedding(self):
         client = self.establish_client()
         logger.info(f"Creating collection for user {self.user_id}.")
-        collection = client.get_or_create_collection(
+        collection = client.create_collection(
             name=self.user_id,
             embedding_function=OpenAIEmbeddingFunction(
                 model_name="text-embedding-3-small"
