@@ -9,7 +9,7 @@ from team_lens_v1.services.rag.vectordb_chroma_persistent import (collect_ids_an
 from team_lens_v1.services.llm.open_ai_functions import get_response_from_openai
 
 
-CHROMA_LOCAL_DATABASE_PATH = "../../data_storage/chroma_db/chroma_persistent"
+CHROMA_LOCAL_DATABASE_PATH = "../../../data_storage/chroma_db/chroma_persistent"
 
 
 def get_absolute_path(relative_path: str) -> str:

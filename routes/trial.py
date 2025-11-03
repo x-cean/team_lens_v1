@@ -5,6 +5,7 @@ from sqlmodel import Session
 import os
 
 from team_lens_v1.services.rag.workflow_1_rag import rag_workflow_1
+from team_lens_v1.services.rag.workflow_3_rag_chroma_trialusers import rag_workflow_3
 from team_lens_v1.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
 from team_lens_v1.datamanager.models import TrialMessage
@@ -56,10 +57,9 @@ async def ask(
             f.write(content)
 
     # call the function
-    answer = rag_workflow_1(
+    answer = rag_workflow_3(
         user_query=question,
-        pdf_path=temp_pdf_path if content else None,
-        threshold=0.4,
+        file_path=temp_pdf_path if content else None,
         top_k=3,
     )
 
@@ -131,11 +131,11 @@ async def ask(
     # )
 
     # call the function workflow 3
-    answer = rag_workflow_1(
+    answer = rag_workflow_3(
         user_query=question,
-        pdf_path=temp_pdf_path if content else None,
+        file_path=temp_pdf_path if content else None,
         messages=messages,
-        top_k=3,
+        top_k=3
     )
 
     # Clean up temporary file
