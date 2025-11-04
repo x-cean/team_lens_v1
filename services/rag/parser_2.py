@@ -1,3 +1,8 @@
+"""
+pip install 'markitdown[all]' - it has some fancy audio features that I don't need here
+"""
+
+
 from markitdown import MarkItDown
 
 
