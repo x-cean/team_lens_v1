@@ -7,7 +7,7 @@ from typing import Any, List
 
 from .datamanager_interface import DataManagerInterface
 from .models import User, UsersPublic, Chat, ChatsPublic, Message, TrialChat, TrialMessage
-from .sql_database_init import supabase_init, postgresql_init
+from .sql_database_init import supabase_init, sql_init
 
 
 class PostgresDataManager(DataManagerInterface):

@@ -9,8 +9,8 @@ from team_lens_v1.services.rag.workflow_3_rag_chroma_trialusers import rag_workf
 from team_lens_v1.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
 from team_lens_v1.datamanager.models import TrialMessage
-from team_lens_v1.datamanager.sql_postgre_datamanager import PostgresDataManager
-from team_lens_v1.datamanager.sql_database_init import fastapi_postgresql_init
+from team_lens_v1.datamanager.sql_datamanager import PostgresDataManager
+from team_lens_v1.datamanager.sql_database_init import fastapi_sql_init
 
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))
@@ -34,14 +34,14 @@ from typing import Annotated
 file: Annotated[UploadFile | None, File(None)],
 question: Annotated[str, Form(...)],
 chat_id: Annotated[int | None, Form(None)],
-session: Annotated[Session, Depends(fastapi_postgresql_init)]
+session: Annotated[Session, Depends(fastapi_sql_init)]
 """
 @router.post("/ask")
 async def ask(
     file: UploadFile | None = File(None),
     question: str = Form(...),
     chat_id: int | None = Form(None),
-    session: Session = Depends(fastapi_postgresql_init)
+    session: Session = Depends(fastapi_sql_init)
 ):
     import os
     import tempfile
@@ -96,7 +96,7 @@ async def ask(
     chat_id: int,
     file: UploadFile | None = File(None),
     question: str = Form(...), # better go with question: Annotated[str, Form()] etc.
-    session: Session = Depends(fastapi_postgresql_init),
+    session: Session = Depends(fastapi_sql_init),
 ):
     import os
     import tempfile
