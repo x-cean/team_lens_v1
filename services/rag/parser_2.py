@@ -1,7 +1,7 @@
 from docling.document_converter import DocumentConverter
 from docling.chunking import HybridChunker
 
-def parse_and_chunk_pdf(file_path: str, max_tokens: int = 500):
+def parse_and_chunk_file(file_path: str, max_tokens: int = 500):
     """Parse PDF and chunk semantically using Docling v2."""
     # Step 1: Parse PDF to DoclingDocument (preserves structure automatically)
     converter = DocumentConverter()
@@ -12,4 +12,4 @@ def parse_and_chunk_pdf(file_path: str, max_tokens: int = 500):
     chunker = HybridChunker()
     chunks = chunker.chunk(doc)
 
-    return [chunk.text for chunk in chunks]
+    return chunks

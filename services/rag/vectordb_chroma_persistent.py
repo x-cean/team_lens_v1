@@ -39,6 +39,18 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
         metadatas_list.append(metadata_dict)
     return ids, documents, metadatas_list
 
+def collect_ids_and_chunks_and_metadata_from_chunks(chunks):
+    ids = []
+    chunks = []
+    metadatas_list = []
+    for i, chunk in enumerate(chunks):
+        ids.append(f"{i + 1}")
+        chunks.append(chunk.text)
+        metadata_dict = chunk.meta if chunk.meta else {}
+        metadatas_list.append(metadata_dict)
+    return ids, chunks, metadatas_list
+
+
 def establish_chroma_persistent_client(path):
     path = create_persistent_db_folder_if_not_exist(path)
     user_chroma_client = chromadb.PersistentClient(path=path)
