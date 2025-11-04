@@ -49,6 +49,7 @@ def collect_ids_and_chunks_and_metadata_from_chunks(chunks):
         metadata_dict = chunk.meta if chunk.meta else {}
         metadatas_list.append(metadata_dict)
     return ids, chunks, metadatas_list
+    # todo: remember how to collect metadata from chunk.meta (refer to test2, get headers and sources)
 
 
 def establish_chroma_persistent_client(path):
