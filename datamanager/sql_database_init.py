@@ -10,11 +10,17 @@ from fastapi import Depends
 from typing import Annotated
 from pathlib import Path
 
-
+# supabase
 SESSION_POOLER_SITE = (f"postgresql+psycopg2://postgres.{SUPABASE_DB_STRING}:{SUPABASE_DB_PASSWORD}"
                        f"@aws-1-eu-north-1.pooler.supabase.com:5432/postgres")
 DIRECT_CONNECTION_SITE = f"postgresql://postgres:{SUPABASE_DB_PASSWORD}@db.{SUPABASE_URL_2}:5432/postgres"
-SQLITE_PATH = "sqlite:///../../team_lens.db"
+
+# sqlite
+# Get project root (where your main.py or run script is)
+PROJECT_ROOT = Path(__file__).parent.parent.parent  # Adjust based on file location
+SQLITE_DB_DIR = PROJECT_ROOT / "data_storage" / "sql_db"
+SQLITE_DB_PATH = SQLITE_DB_DIR / "team_lens.db"
+SQLITE_PATH = f"sqlite:///{SQLITE_DB_PATH}"
 
 
 def ensure_sqlite_db_exists(db_path: str) -> None:
@@ -35,8 +41,11 @@ def ensure_sqlite_db_exists(db_path: str) -> None:
         logger.info(f"Using existing SQLite database at {db_path}")
 
 
-# sql
+# sqlite
 def fastapi_sql_init():
+    # create file and folder if not exist
+    ensure_sqlite_db_exists(f"{SQLITE_DB_PATH}")
+
     # create tables if not exist
     sql_engine = create_engine(SQLITE_PATH)
     SQLModel.metadata.create_all(sql_engine)
@@ -45,6 +54,10 @@ def fastapi_sql_init():
 
 
 def sql_init():
+    # create file and folder if not exist
+    ensure_sqlite_db_exists(f"{SQLITE_DB_PATH}")
+
+    # create tables if not exist
     sql_engine = create_engine(SQLITE_PATH)
     SQLModel.metadata.create_all(sql_engine)
     sql_session = Session(sql_engine)

@@ -9,6 +9,7 @@ from team_lens_v1.services.rag.vectordb_chroma_persistent import (collect_ids_an
 from team_lens_v1.services.llm.open_ai_functions import get_response_from_openai
 
 
+# todo: this can't be relative path if running from other directories, change it!
 CHROMA_LOCAL_DATABASE_PATH = "../../../data_storage/chroma_db/chroma_persistent"
 
 

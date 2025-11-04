@@ -2,14 +2,14 @@ import chromadb
 
 from abc import ABC, abstractmethod
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
-# todo: from chromadb.errors import what error?
+# todo: from chromadb.errors import what error exactly?
 from datetime import datetime
 
 from team_lens_v1.config import OPENAI_API_KEY, CHROMA_API_KEY, CHROMA_TENANT_ID
 from team_lens_v1.logger import logger
 
 
-CHROMA_LOCAL_DATABASE_PATH = "/my_data/database/chroma_persistent"
+CHROMA_LOCAL_DATABASE_PATH = "" # todo: in case i am going to use datamanager (but not necessary)
 
 
 class ChromadbDataManagerBase(ABC):
