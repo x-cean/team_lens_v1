@@ -1,5 +1,7 @@
 import os
 from typing import List
+from pathlib import Path
+
 from team_lens_v1.logger import logger
 from team_lens_v1.services.rag.parser_1 import docling_file_loader
 from team_lens_v1.services.rag.vectordb_chroma_persistent import (collect_ids_and_documents_and_metadata_from_docs,
@@ -9,14 +11,17 @@ from team_lens_v1.services.rag.vectordb_chroma_persistent import (collect_ids_an
 from team_lens_v1.services.llm.open_ai_functions import get_response_from_openai
 
 
-# todo: this can't be relative path if running from other directories, change it!
-CHROMA_LOCAL_DATABASE_PATH = "../../../data_storage/chroma_db/chroma_persistent"
+CHROMA_LOCAL_DATABASE_PATH = Path(__file__).parent.parent.parent / "data_storage" / "chroma_db" / "chroma_persistent"
 
 
-def get_absolute_path(relative_path: str) -> str:
-    base_dir = os.getcwd()
-    absolute_path = os.path.join(base_dir, relative_path)
-    return absolute_path
+
+def get_absolute_path(relative_path: str | Path) -> str:
+    """Convert to absolute path, creating directories if needed."""
+    path = Path(relative_path)
+    if not path.is_absolute():
+        path = path.resolve()
+    path.mkdir(parents=True, exist_ok=True)
+    return f"{path}"
 
 
 def file_embeddings(file_path: str) -> tuple[List[str], List[str], List[dict]]:
