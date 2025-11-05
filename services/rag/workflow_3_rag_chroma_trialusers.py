@@ -12,7 +12,7 @@ from team_lens_v1.services.llm.open_ai_functions import get_response_from_openai
 
 
 CHROMA_LOCAL_DATABASE_PATH = Path(__file__).parent.parent.parent.parent / "data_storage" / "chroma_db" / "chroma_persistent"
-
+#todo: explore the chroma database, and improve the RAG retrieval!!!
 
 
 def get_absolute_path(relative_path: str | Path) -> str:
