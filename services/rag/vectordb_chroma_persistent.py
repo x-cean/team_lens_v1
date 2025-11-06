@@ -21,7 +21,7 @@ def create_persistent_db_folder_if_not_exist(path: str):
 def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=None,
                                                      workspace_id: str | None=None):
     """
-    downstream step after document loading with docling
+    downstream step after document loading with docling loader
     Collects ids, documents, and metadata from a list of Document objects
     important step where metadata such as source is added
     """
@@ -40,13 +40,18 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
     return ids, documents, metadatas_list
 
 def collect_ids_and_chunks_and_metadata_from_chunks(chunks):
+    """
+    downstream step after document loading with docling coverter and then hybrid chunker
+    Collects ids, documents, and metadata from a list of Document objects
+    important step where metadata such as source is added
+    """
     ids = []
     chunks = []
     metadatas_list = []
     for i, chunk in enumerate(chunks):
         ids.append(f"{i + 1}")
         chunks.append(chunk.text)
-        metadata_dict = chunk.meta if chunk.meta else {}
+        metadata_dict = dict(chunk.meta) if chunk.meta else {} # chunk.data is an object so need to convert to dict
         metadatas_list.append(metadata_dict)
     return ids, chunks, metadatas_list
     # todo: remember how to collect metadata from chunk.meta (refer to test2, get headers and sources)
