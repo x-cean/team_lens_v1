@@ -41,7 +41,7 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
 
 def collect_ids_and_chunks_and_metadata_from_chunks(chunks):
     """
-    downstream step after document loading with docling coverter and then hybrid chunker
+    downstream step after document loading with docling converter and then hybrid chunker
     Collects ids, documents, and metadata from a list of Document objects
     important step where metadata such as source is added
     """

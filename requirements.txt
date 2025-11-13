@@ -9,3 +9,4 @@ groq
 supabase
 psycopg2-binary
 langchain-docling
+docling
