@@ -1,5 +1,6 @@
-**About team lens 🫧**  
 Hi, this is a project in the making. 
+
+**About team lens 🫧**  
 The goal is to build a team-knowledge-base-intelligence that helps us get up-to-date work information easily!
 
 **What's working 🌟**  
