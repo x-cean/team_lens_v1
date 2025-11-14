@@ -1,0 +1,204 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF;
+    padding: 20px;
+    color: #000000;
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+#cover_picture, #error_picture {
+    display: block;
+    margin: 30px auto 0 auto; /* 0 top margin, auto left/right, 0 bottom */
+}
+
+.navbar {
+    background-color: #FFFFFF;
+    overflow: hidden;
+    position: fixed;     /* Make it stick */
+    top: 0;              /* Stick to the top */
+    width: 100%;         /* Full width */
+    z-index: 1000;       /* Stay on top of other elements */
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #000000;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #000000;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    color: #000000;
+}
+
+a#try {
+    font-size: 1.3em;
+    display: inline-block;
+    margin: 50px auto 0 auto;
+    border: 1px solid #000;
+    color: #fff;
+    background-color: #000;
+    padding: 12px 24px;
+    outline: none;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+}
+
+a#try:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+#drop_zone {
+    border:2px dashed #ccc;
+    padding:20px;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+#chat-board {
+    max-width: 600px;
+    margin: 30px auto 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#chat {
+    width: 90%;
+    max-width: 600px;
+    height: 250px;
+    padding: 20px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    min-height: 200px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow-y: auto;
+    margin: 0 auto;
+}
+
+#chatForm {
+    width: 95%;
+    max-width: 600px;
+    margin: auto;
+}
+
+#chat-input-row {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    gap: 15px;
+    /*margin: 0 auto;*/
+}
+
+#chat-input-row input[type="text"] {
+    flex: 1 1 auto;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+#chat-input-row button, #uploadForm button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    background: #FFFFFF;
+    border: 1px solid #000;
+    color: #000000;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#chat-input-row button:hover, #uploadForm button:hover {
+    background: #000000;
+    color: #FFFFFF;
+}
+
+.chat-msg {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.chat-msg.user {
+    justify-content: flex-end;
+}
+
+.chat-msg.bot {
+    justify-content: flex-start;
+}
+
+.bubble {
+    max-width: 70%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 1rem;
+    line-height: 1.5;
+    word-break: break-word;
+    text-align: left;
+    overflow: visible; /* Allow code blocks to scroll horizontally */
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.user .bubble {
+    background: #000000;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.bot .bubble {
+    background: #e5e5ea;
+    color: #222;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-msg.bot .bubble pre {
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 8px 0;
+    overflow-x: auto;
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    font-size: 0.95em;
+    white-space: pre;
+    box-sizing: border-box;
+    max-width: 100%;
+    word-break: normal;
+}
+
+.chat-msg.bot .bubble pre code {
+    padding: 0;
+    margin: 0;
+    background: none;
+    font-size: inherit;
+    border-radius: 0;
+}
+
+@media (max-width: 600px) {
+body {
+    padding: 10px;
+}
+
+#chat-board {
+    width: 90%;
+}
+
+}

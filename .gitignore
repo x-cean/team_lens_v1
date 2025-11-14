@@ -2,8 +2,9 @@
 tests.py
 tests2.py
 /my_data/
+/app/my_data
 /notes/
-/services/rag/backups
+/app/services/rag/backups
 
 # It was tracked
 .DS_Store

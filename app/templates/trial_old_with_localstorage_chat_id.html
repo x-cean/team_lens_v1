@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Lens Trial - File Upload & Chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/">Team Lens</a>
+        <a href="/login">Log In</a>
+    </div>
+    <h1>Upload a reference file and let AI answer your questions!</h1>
+    <h3>Currently supporting: .pdf, .txt</h3>
+
+    <form id="chatForm" enctype="multipart/form-data">
+        <div id="drop_zone">Drag & drop a file here or click to select</div>
+        <input type="file" name="file" id="fileInput" style="display:none;">
+        <div id="chat-board">
+            <div id="chat"></div>
+            <div id="chat-input-row">
+                <input type="text" id="message" autocomplete="off" placeholder="Type your message...">
+                <button type="submit">Send</button>
+            </div>
+        </div>
+    </form>
+    <!--DOMPurify for Safe HTML Rendering-->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+
+    <script>
+        // Drag and drop for file upload
+        const dropZone = document.getElementById('drop_zone');
+        const fileInput = document.getElementById('fileInput');
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.background = '#eee'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.background = ''; });
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault(); dropZone.style.background = '';
+            if (e.dataTransfer.files.length) fileInput.files = e.dataTransfer.files;
+        });
+
+        // Chat and file upload in one form
+        const chat = document.getElementById('chat');
+        document.getElementById('chatForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('message').value;
+            chat.innerHTML += `<div class="chat-msg user"><div class="bubble">${msg}</div></div>`;
+            document.getElementById('message').value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            const formData = new FormData();
+            formData.append('question', msg);
+            if (fileInput.files[0]) {
+                formData.append('file', fileInput.files[0]);
+            }
+            // Add chat_id if present
+            const chatId = localStorage.getItem('chat_id');
+            if (chatId) {
+                formData.append('chat_id', chatId);
+            }
+
+            const res = await fetch('/ask', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.chat_id) {
+                localStorage.setItem('chat_id', data.chat_id);
+            }
+            // Convert Markdown to HTML (preserves code blocks and embedded HTML)
+            const htmlStr = marked.parse(data.answer);
+            // Sanitize the resulting HTML
+            const safeHTML = DOMPurify.sanitize(htmlStr);
+            chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${safeHTML}</div></div>`;
+            chat.scrollTop = chat.scrollHeight;
+        };
+        </script>
+</body>
+</html>
