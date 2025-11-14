@@ -1,9 +1,9 @@
 # for dev i ignore the following
-tests.py
-tests2.py
-/my_data/
+../not_committed_parts/tests.py
+../not_committed_parts/tests2.py
+/not_committed_parts/my_data/
 /app/my_data
-/notes/
+/not_committed_parts/notes/
 /app/services/rag/backups
 /data_storage/
 /logs/
