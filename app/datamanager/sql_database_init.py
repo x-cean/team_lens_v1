@@ -1,5 +1,13 @@
 from team_lens_v1.app.logger import logger
-from team_lens_v1.app.config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_DB_PASSWORD, SUPABASE_URL_2, SUPABASE_DB_STRING
+from team_lens_v1.app.config import (
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    SUPABASE_DB_PASSWORD,
+    SUPABASE_URL_2,
+    SUPABASE_DB_STRING,
+    SQLITE_DB_FILE,
+    SQLITE_URL,
+)
 from supabase import Client, create_client
 from sqlmodel import SQLModel, create_engine, Session
 from pathlib import Path
@@ -9,12 +17,7 @@ SESSION_POOLER_SITE = (f"postgresql+psycopg2://postgres.{SUPABASE_DB_STRING}:{SU
                        f"@aws-1-eu-north-1.pooler.supabase.com:5432/postgres")
 DIRECT_CONNECTION_SITE = f"postgresql://postgres:{SUPABASE_DB_PASSWORD}@db.{SUPABASE_URL_2}:5432/postgres"
 
-# sqlite
-# Get project root (where your main.py or run script is)
-PROJECT_ROOT = Path(__file__).parent.parent.parent  # Adjust based on file location
-SQLITE_DB_DIR = PROJECT_ROOT / "data_storage" / "sql_db"
-SQLITE_DB_PATH = SQLITE_DB_DIR / "team_lens.db"
-SQLITE_PATH = f"sqlite:///{SQLITE_DB_PATH}"
+# sqlite paths are centralized in config.py
 
 
 def ensure_sqlite_db_exists(db_path: str) -> None:
@@ -38,10 +41,10 @@ def ensure_sqlite_db_exists(db_path: str) -> None:
 # sqlite
 def fastapi_sql_init():
     # create file and folder if not exist
-    ensure_sqlite_db_exists(f"{SQLITE_DB_PATH}")
+    ensure_sqlite_db_exists(f"{SQLITE_DB_FILE}")
 
     # create tables if not exist
-    sql_engine = create_engine(SQLITE_PATH)
+    sql_engine = create_engine(SQLITE_URL)
     SQLModel.metadata.create_all(sql_engine)
     with Session(sql_engine) as sql_session:
         yield sql_session
@@ -49,10 +52,10 @@ def fastapi_sql_init():
 
 def sql_init():
     # create file and folder if not exist
-    ensure_sqlite_db_exists(f"{SQLITE_DB_PATH}")
+    ensure_sqlite_db_exists(f"{SQLITE_DB_FILE}")
 
     # create tables if not exist
-    sql_engine = create_engine(SQLITE_PATH)
+    sql_engine = create_engine(SQLITE_URL)
     SQLModel.metadata.create_all(sql_engine)
     sql_session = Session(sql_engine)
     return sql_session

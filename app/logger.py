@@ -1,12 +1,16 @@
 import logging
 import sys
 import os
+from team_lens_v1.app.config import PROJECT_LOG_FILE, LLM_EVAL_LOG_FILE, LOGS_DIR
+
+# Ensure logs directory exists (safety; also handled in config)
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
     handlers=[
-        logging.FileHandler("../project.log"),
+        logging.FileHandler(PROJECT_LOG_FILE),
         logging.StreamHandler(sys.stdout)
     ]
 )
@@ -24,11 +28,8 @@ def _setup_llm_eval_logger() -> None:
     llm_logger.setLevel(logging.INFO)
     llm_logger.propagate = False  # don't mirror into root handlers
 
-    # Resolve path to my_data/evals/llm_eval_data.json relative to this file
-    base_dir = os.path.dirname(__file__)
-    evals_dir = os.path.join(base_dir, "my_data", "evals")
-    os.makedirs(evals_dir, exist_ok=True)
-    eval_file = os.path.join(evals_dir, "llm_eval_data.json")
+    # Use centralized LLM eval log file under data_storage/logs
+    eval_file = str(LLM_EVAL_LOG_FILE)
 
     fh = logging.FileHandler(eval_file, mode="a", encoding="utf-8")
     # Formatter writes only the message (which will be a JSON string), one per line

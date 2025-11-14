@@ -3,6 +3,7 @@ from typing import List
 from pathlib import Path
 
 from team_lens_v1.app.logger import logger
+from team_lens_v1.app.config import CHROMA_PERSISTENT_DIR
 from team_lens_v1.app.services.rag.parser_1 import docling_file_loader
 from team_lens_v1.app.services.rag.vectordb_chroma_persistent import (collect_ids_and_documents_and_metadata_from_docs,
                                                                       establish_chroma_persistent_client,
@@ -11,7 +12,7 @@ from team_lens_v1.app.services.rag.vectordb_chroma_persistent import (collect_id
 from team_lens_v1.app.services.llm.open_ai_functions import get_response_from_openai
 
 
-CHROMA_LOCAL_DATABASE_PATH = Path(__file__).parent.parent.parent.parent / "data_storage" / "chroma_db" / "chroma_persistent"
+CHROMA_LOCAL_DATABASE_PATH = CHROMA_PERSISTENT_DIR
 #todo: explore the chroma database, and improve the RAG retrieval!!!
 # e.g. how to deal with it if all trials are in one collection.
 

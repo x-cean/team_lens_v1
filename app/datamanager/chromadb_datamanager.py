@@ -5,11 +5,11 @@ from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 # todo: from chromadb.errors import what error exactly?
 from datetime import datetime
 
-from team_lens_v1.app.config import CHROMA_API_KEY, CHROMA_TENANT_ID
+from team_lens_v1.app.config import CHROMA_API_KEY, CHROMA_TENANT_ID, CHROMA_PERSISTENT_DIR
 from team_lens_v1.app.logger import logger
 
 
-CHROMA_LOCAL_DATABASE_PATH = "" # todo: in case i am going to use datamanager (but not necessary)
+CHROMA_LOCAL_DATABASE_PATH = str(CHROMA_PERSISTENT_DIR)
 
 
 class ChromadbDataManagerBase(ABC):

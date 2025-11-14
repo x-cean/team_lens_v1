@@ -1,6 +1,7 @@
 import os
 from typing import List
 from team_lens_v1.app.logger import logger
+from team_lens_v1.app.config import CHROMA_PERSISTENT_DIR
 from team_lens_v1.app.services.rag.parser_2 import parse_and_chunk_file
 from team_lens_v1.app.services.rag.vectordb_chroma_persistent import (establish_chroma_persistent_client,
                                                                       create_user_collection_with_openai_embedding,
@@ -8,7 +9,7 @@ from team_lens_v1.app.services.rag.vectordb_chroma_persistent import (establish_
 from team_lens_v1.app.services.llm.open_ai_functions import get_response_from_openai
 
 
-CHROMA_LOCAL_DATABASE_PATH = "../../../../data_storage/chroma_db/chroma_persistent"
+CHROMA_LOCAL_DATABASE_PATH = str(CHROMA_PERSISTENT_DIR)
 
 
 def get_absolute_path(relative_path: str) -> str:
