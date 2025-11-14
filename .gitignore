@@ -5,6 +5,8 @@ tests2.py
 /app/my_data
 /notes/
 /app/services/rag/backups
+/data_storage/
+/logs/
 
 # It was tracked
 .DS_Store
