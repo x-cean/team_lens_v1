@@ -5,8 +5,8 @@ from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 # todo: from chromadb.errors import what error exactly?
 from datetime import datetime
 
-from team_lens_v1.app.config import CHROMA_API_KEY, CHROMA_TENANT_ID, CHROMA_PERSISTENT_DIR
-from team_lens_v1.app.logger import logger
+from app.config import CHROMA_API_KEY, CHROMA_TENANT_ID, CHROMA_PERSISTENT_DIR
+from app.logger import logger
 
 
 CHROMA_LOCAL_DATABASE_PATH = str(CHROMA_PERSISTENT_DIR)

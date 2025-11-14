@@ -1,7 +1,7 @@
 import logging
 import sys
 import os
-from team_lens_v1.app.config import PROJECT_LOG_FILE, LLM_EVAL_LOG_FILE, LOGS_DIR
+from app.config import PROJECT_LOG_FILE, LLM_EVAL_LOG_FILE, LOGS_DIR
 
 # Ensure logs directory exists (safety; also handled in config)
 os.makedirs(LOGS_DIR, exist_ok=True)

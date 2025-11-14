@@ -1,0 +1,13 @@
+services:
+  fastapi-app:
+    build: .
+    container_name: fastapi_rag_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data_storage:/app/data_storage   # persistent DB, Chroma, logs
+      - ./app:/app/app                     # hot reload for dev
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    restart: unless-stopped

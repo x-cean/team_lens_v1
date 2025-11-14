@@ -5,6 +5,9 @@ FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Include project root in Python path
+ENV PYTHONPATH=/app
+
 # ---------- Set Working Directory ----------
 WORKDIR /app
 
@@ -29,6 +32,5 @@ COPY ./app ./app
 # ---------- Expose Port ----------
 EXPOSE 8000
 
-# ---------- Default Command ----------
-# Use --reload for development; override in docker-compose for prod
+# ---------- Default Command (dev mode with reload) ----------
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

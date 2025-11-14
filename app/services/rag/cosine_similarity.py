@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Tuple
-from team_lens_v1.app.logger import logger
+from app.logger import logger
 
 
 ### todo: vector database

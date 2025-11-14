@@ -1,5 +1,5 @@
 import json
-from team_lens_v1.app.logger import get_llm_eval_logger
+from app.logger import get_llm_eval_logger
 
 
 def log_eval_data(model: str, model_setup: dict, prompt: str | list, output_text: str, latency: float, input_tokens: int,

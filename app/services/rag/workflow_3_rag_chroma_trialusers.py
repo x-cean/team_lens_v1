@@ -2,14 +2,14 @@ import os
 from typing import List
 from pathlib import Path
 
-from team_lens_v1.app.logger import logger
-from team_lens_v1.app.config import CHROMA_PERSISTENT_DIR
-from team_lens_v1.app.services.rag.parser_1 import docling_file_loader
-from team_lens_v1.app.services.rag.vectordb_chroma_persistent import (collect_ids_and_documents_and_metadata_from_docs,
-                                                                      establish_chroma_persistent_client,
-                                                                      create_user_collection_with_openai_embedding,
-                                                                      add_documents_to_user_collection, query_collection)
-from team_lens_v1.app.services.llm.open_ai_functions import get_response_from_openai
+from app.logger import logger
+from app.config import CHROMA_PERSISTENT_DIR
+from app.services.rag.parser_1 import docling_file_loader
+from app.services.rag.vectordb_chroma_persistent import (collect_ids_and_documents_and_metadata_from_docs,
+                                                         establish_chroma_persistent_client,
+                                                         create_user_collection_with_openai_embedding,
+                                                         add_documents_to_user_collection, query_collection)
+from app.services.llm.open_ai_functions import get_response_from_openai
 
 
 CHROMA_LOCAL_DATABASE_PATH = CHROMA_PERSISTENT_DIR
