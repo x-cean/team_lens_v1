@@ -1,5 +1,5 @@
 from sqlmodel import Session, select, func
-from team_lens_v1.app.logger import logger
+from app.logger import logger
 from typing import Any
 
 from .datamanager_interface import DataManagerInterface

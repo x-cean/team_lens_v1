@@ -4,12 +4,12 @@ from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 import os
 
-from team_lens_v1.app.services.rag.workflow_3_rag_chroma_trialusers import rag_workflow_3
-from team_lens_v1.app.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
+from app.services.rag.workflow_3_rag_chroma_trialusers import rag_workflow_3
+from app.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
-from team_lens_v1.app.datamanager.models import TrialMessage
-from team_lens_v1.app.datamanager.sql_datamanager import PostgresDataManager
-from team_lens_v1.app.datamanager.sql_database_init import fastapi_sql_init
+from app.datamanager.models import TrialMessage
+from app.datamanager.sql_datamanager import PostgresDataManager
+from app.datamanager.sql_database_init import fastapi_sql_init
 
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))

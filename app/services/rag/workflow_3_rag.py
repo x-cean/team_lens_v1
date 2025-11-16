@@ -1,12 +1,12 @@
 import os
 from typing import List
-from team_lens_v1.app.logger import logger
-from team_lens_v1.app.config import CHROMA_PERSISTENT_DIR
-from team_lens_v1.app.services.rag.parser_2 import parse_and_chunk_file
-from team_lens_v1.app.services.rag.vectordb_chroma_persistent import (establish_chroma_persistent_client,
-                                                                      create_user_collection_with_openai_embedding,
-                                                                      add_documents_to_user_collection, query_collection)
-from team_lens_v1.app.services.llm.open_ai_functions import get_response_from_openai
+from app.logger import logger
+from app.config import CHROMA_PERSISTENT_DIR
+from app.services.rag.parser_2 import parse_and_chunk_file
+from app.services.rag.vectordb_chroma_persistent import (establish_chroma_persistent_client,
+                                                         create_user_collection_with_openai_embedding,
+                                                         add_documents_to_user_collection, query_collection)
+from app.services.llm.open_ai_functions import get_response_from_openai
 
 
 CHROMA_LOCAL_DATABASE_PATH = str(CHROMA_PERSISTENT_DIR)

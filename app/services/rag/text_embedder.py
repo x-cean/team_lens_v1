@@ -1,4 +1,4 @@
-from team_lens_v1.app.config import OPENAI_API_KEY
+from app.config import OPENAI_API_KEY
 from openai import OpenAI
 from typing import List
 

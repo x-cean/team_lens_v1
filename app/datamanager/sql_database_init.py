@@ -1,5 +1,5 @@
-from team_lens_v1.app.logger import logger
-from team_lens_v1.app.config import (
+from app.logger import logger
+from app.config import (
     SUPABASE_URL,
     SUPABASE_KEY,
     SUPABASE_DB_PASSWORD,

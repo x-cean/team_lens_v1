@@ -1,4 +1,4 @@
-from team_lens_v1.app.config import GERMINI_API_KEY
+from app.config import GERMINI_API_KEY
 from google import genai
 from .prompt_settings import AI_ROLE_TRIAL
 

@@ -1,9 +1,9 @@
 import io
 from typing import List
-from team_lens_v1.app.services.rag.parser_1 import docling_file_loader, docs_to_texts
-from team_lens_v1.app.services.rag.text_embedder import openai_text_embedder
-from team_lens_v1.app.services.rag.cosine_similarity import find_similar_items_manual
-from team_lens_v1.app.services.llm.open_ai_functions import get_response_from_openai
+from app.services.rag.parser_1 import docling_file_loader, docs_to_texts
+from app.services.rag.text_embedder import openai_text_embedder
+from app.services.rag.cosine_similarity import find_similar_items_manual
+from app.services.llm.open_ai_functions import get_response_from_openai
 
 
 def file_embeddings(file_path: str) -> List[tuple[str, List[float]]]:

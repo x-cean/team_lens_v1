@@ -1,8 +1,8 @@
 import openai
 import time
 from typing import List
-from team_lens_v1.app.config import OPENAI_API_KEY
-from team_lens_v1.app.logger import logger
+from app.config import OPENAI_API_KEY
+from app.logger import logger
 from .prompt_settings import SYSTEM_PROMPT_TRIAL
 from .llm_eval_data import log_eval_data
 

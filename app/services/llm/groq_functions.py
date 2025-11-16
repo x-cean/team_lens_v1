@@ -1,5 +1,5 @@
 from groq import Groq
-from team_lens_v1.app.config import GROQ_API_KEY
+from app.config import GROQ_API_KEY
 # from .prompt_settings import AI_ROLE
 
 
