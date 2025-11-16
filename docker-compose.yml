@@ -1,13 +1,18 @@
 services:
   fastapi-app:
     build: .
-    container_name: fastapi_rag_app
+    container_name: team_lens_v1_app
     ports:
       - "8000:8000"
     volumes:
-      - ./data_storage:/app/data_storage   # persistent DB, Chroma, logs
-      - ./app:/app/app                     # hot reload for dev
+      - ./data_storage:/app/data_storage   # bind mounts, persistent DB, Chroma, logs
+      - ./app:/app/app                     # bind mounts, hot reload for dev
+      - huggingface_cache:/root/.cache/huggingface  # named volumes, persistent between container restarts
+
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
     restart: unless-stopped
+
+volumes:
+  huggingface_cache:

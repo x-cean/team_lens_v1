@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     curl \
     git \
+    libgl1 \
+    libglib2.0-0 \
+    libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 # ---------- Upgrade pip and setuptools ----------

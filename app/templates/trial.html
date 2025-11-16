@@ -16,7 +16,14 @@
     <h3>Currently supporting: .pdf</h3>
 
     <form id="chatForm" enctype="multipart/form-data">
-        <div id="drop_zone">Drag & drop a file here or click to select</div>
+        <div id="drop_zone">
+            Drag & drop a file here or click to select
+            <div id="fileName"></div>
+            <div id="uploadProgressContainer" aria-label="Upload progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="display:none;">
+                <div id="uploadProgressBar"></div>
+            </div>
+            <div id="uploadStatus"></div>
+        </div>
         <input type="file" name="file" id="fileInput" style="display:none;">
         <div id="chat-board">
             <div id="chat"></div>
@@ -38,13 +45,31 @@
         // Drag and drop for file upload
         const dropZone = document.getElementById('drop_zone');
         const fileInput = document.getElementById('fileInput');
+        const fileNameEl = document.getElementById('fileName');
+        const progressWrap = document.getElementById('uploadProgressContainer');
+        const progressBar = document.getElementById('uploadProgressBar');
+        const uploadStatus = document.getElementById('uploadStatus');
+
+        function showSelectedFileName() {
+            const f = fileInput.files && fileInput.files[0];
+            if (f) {
+                fileNameEl.textContent = `Selected file: ${f.name}`;
+            } else {
+                fileNameEl.textContent = '';
+            }
+        }
+
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.background = '#eee'; });
         dropZone.addEventListener('dragleave', () => { dropZone.style.background = ''; });
         dropZone.addEventListener('drop', e => {
             e.preventDefault(); dropZone.style.background = '';
-            if (e.dataTransfer.files.length) fileInput.files = e.dataTransfer.files;
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                showSelectedFileName();
+            }
         });
+        fileInput.addEventListener('change', showSelectedFileName);
 
         // Chat and file upload in one form
         const chat = document.getElementById('chat');
@@ -72,9 +97,57 @@
             // Choose endpoint: /ask for new chat, /ask/{chatId} for ongoing chat
             const url = chatId ? `/ask/${chatId}` : '/ask';
 
-            // Send the request and get the response
-            const res = await fetch(url, { method: 'POST', body: formData });
-            const data = await res.json();
+            // Send the request with progress if a file is included
+            const hasFile = !!fileInput.files[0];
+
+            // Prepare UI for upload progress
+            if (hasFile) {
+                progressBar.style.width = '0%';
+                progressWrap.style.display = 'block';
+                progressWrap.setAttribute('aria-valuenow', '0');
+                uploadStatus.textContent = '';
+            }
+
+            let data;
+            try {
+                data = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', url);
+
+                    if (hasFile) {
+                        xhr.upload.onprogress = (evt) => {
+                            if (evt.lengthComputable) {
+                                const percent = Math.round((evt.loaded / evt.total) * 100);
+                                progressBar.style.width = percent + '%';
+                                progressWrap.setAttribute('aria-valuenow', String(percent));
+                            }
+                        };
+                    }
+
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                resolve(JSON.parse(xhr.responseText));
+                            } catch (err) {
+                                reject(err);
+                            }
+                        } else {
+                            reject(new Error('Request failed with status ' + xhr.status));
+                        }
+                    };
+                    xhr.onerror = () => reject(new Error('Network error'));
+                    xhr.send(formData);
+                });
+            } catch (err) {
+                if (hasFile) {
+                    progressWrap.style.display = 'none';
+                    uploadStatus.textContent = 'Upload failed. Please try again.';
+                }
+                // Also show an error message from bot area to keep feedback consistent
+                chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">Sorry, something went wrong sending your request.</div></div>`;
+                chat.scrollTop = chat.scrollHeight;
+                return;
+            }
 
             // If backend returns a chat_id, save it for future messages
             if (data.chat_id) {
@@ -88,6 +161,13 @@
             // Display bot response in the chat
             chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${safeHTML}</div></div>`;
             chat.scrollTop = chat.scrollHeight;
+
+            // Finalize upload UI
+            if (hasFile) {
+                // Hide progress bar and show completion message with file name
+                progressWrap.style.display = 'none';
+                uploadStatus.textContent = `You uploaded a file: ${fileInput.files[0].name}`;
+            }
         };
     </script>
 </body>

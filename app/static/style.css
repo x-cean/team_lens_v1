@@ -70,6 +70,36 @@ a#try:hover {
     margin-bottom:10px;
 }
 
+#fileName {
+    margin-top: 10px;
+    font-size: 0.95rem;
+    color: #000000;
+}
+
+#uploadProgressContainer {
+    width: 100%;
+    max-width: 600px;
+    height: 10px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    margin: 10px auto 4px auto;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+#uploadProgressBar {
+    height: 100%;
+    width: 0%;
+    background: #000000;
+    transition: width 0.2s ease;
+}
+
+#uploadStatus {
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: #000000;
+}
+
 #chat-board {
     max-width: 600px;
     margin: 30px auto 20px auto;
