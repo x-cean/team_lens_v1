@@ -1,22 +1,21 @@
-fastapi[standard]
-sqlmodel
-pypdf
-spacy
-scikit-learn
-openai
-google-genai
-groq
-supabase
-psycopg2-binary
-langchain-docling
-docling
-uvicorn[standard]
-Jinja2
-python-multipart
-chromadb
-aiofiles
-python-dotenv
+fastapi[standard]~=0.115
+sqlmodel~=0.0.21
+pypdf~=4.0
+spacy~=3.7
+scikit-learn~=1.5
+openai~=1.30
+google-genai~=0.4
+groq~=0.9
+supabase~=2.6
+psycopg2-binary~=2.9
+langchain-docling~=0.2
+docling~=2.6
+uvicorn[standard]~=0.30
+Jinja2~=3.1
+python-multipart~=0.0
+chromadb~=0.5
+aiofiles~=23.2
+python-dotenv~=1.0
 
-# todo: spaCy language models are not installed via pip package names here.
 # In Dockerfile, add for example:
 #   RUN python -m spacy download en_core_web_sm
