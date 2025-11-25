@@ -1,21 +1,20 @@
 fastapi[standard]~=0.115
-sqlmodel~=0.0.21
-pypdf~=4.0
-spacy~=3.7
-scikit-learn~=1.5
-openai~=1.30
-google-genai~=0.4
-groq~=0.9
-supabase~=2.6
+sqlmodel~=0.0.27
+pypdf~=6.0
+spacy~=3.8
+scikit-learn~=1.7
+openai~=1.99
+google-genai~=1.30
+groq~=0.31
+supabase~=2.22
 psycopg2-binary~=2.9
-langchain-docling~=0.2
-docling~=2.6
-uvicorn[standard]~=0.30
+langchain-docling~=1.1
+docling~=2.60
+uvicorn[standard]~=0.35
 Jinja2~=3.1
 python-multipart~=0.0
-chromadb~=0.5
-aiofiles~=23.2
-python-dotenv~=1.0
+chromadb~=1.0
+python-dotenv~=1.1
 
 # In Dockerfile, add for example:
 #   RUN python -m spacy download en_core_web_sm
