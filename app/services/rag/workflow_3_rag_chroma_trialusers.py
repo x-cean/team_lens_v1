@@ -36,9 +36,11 @@ def file_embeddings(file_path: str) -> tuple[List[str], List[str], List[dict]]:
     return ids, docs, metadatas_list
 
 
-def rag_workflow_3(user_query: str, file_path: str = None,
-                   user_id: str = None,
-                   messages: List[dict] = None,
+def rag_workflow_3(user_query: str,
+                   file_path: str | None = None,
+                   file_name: str | None = None,
+                   user_id: str | None = None,
+                   messages: List[dict] | None = None,
                    top_k: int = 3) -> str:
 
     # secure vector db path

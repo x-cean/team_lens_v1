@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
+from pathlib import Path
 import os
 
 from app.routes import trial
@@ -11,9 +12,11 @@ from app.routes import home
 app = FastAPI()
 
 # TODO: just question, without this line it still works, what is this for?
-# Mount static files
-app.mount("/static", StaticFiles(
-    directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
+# Get the absolute path to the app directory
+BASE_DIR = Path(__file__).resolve().parent
+
+# Mount static files using absolute path
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 # Middleware (optional CORS), for frontend
 # TODO: in case there's react or other front end

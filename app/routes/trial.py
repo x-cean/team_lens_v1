@@ -101,6 +101,8 @@ async def ask(
     import os
     import tempfile
 
+    filename = file.filename if file else None #todo, now filename is here but how about embedding?
+
     content = await file.read() if file else None
 
     temp_pdf_path = None
