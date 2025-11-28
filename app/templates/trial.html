@@ -158,8 +158,26 @@
             const htmlStr = marked.parse(data.answer);
             const safeHTML = DOMPurify.sanitize(htmlStr);
 
-            // Display bot response in the chat
-            chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">${safeHTML}</div></div>`;
+            // Put sanitized HTML into a temporary container so we can modify anchors
+            const temp = document.createElement('div');
+            temp.innerHTML = safeHTML;
+
+            // Ensure every link opens in a new tab and uses safe rel attributes
+            temp.querySelectorAll('a').forEach(a => {
+                a.setAttribute('target', '_blank');
+                a.setAttribute('rel', 'noopener noreferrer');
+            });
+
+            // Create bubble and message nodes and append sanitized+modified content
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.append(...Array.from(temp.childNodes));
+
+            const botMsg = document.createElement('div');
+            botMsg.className = 'chat-msg bot';
+            botMsg.appendChild(bubble);
+
+            chat.appendChild(botMsg);
             chat.scrollTop = chat.scrollHeight;
 
             // Finalize upload UI
