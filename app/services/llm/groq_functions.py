@@ -1,13 +1,9 @@
 from groq import Groq
 from app.config import GROQ_API_KEY
-# from .prompt_settings import AI_ROLE
+from .prompt_settings import SYSTEM_PROMPT_TRIAL
 
 
-AI_ROLE = """
-You are a helpful work assistant, 
-good at finding work-related information from lots of documents and 
-give simple, clear and professional answer.
-"""
+AI_ROLE = SYSTEM_PROMPT_TRIAL
 
 
 def get_response_from_deepseek(user_prompt):

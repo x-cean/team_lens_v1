@@ -1,6 +1,6 @@
 from app.config import GERMINI_API_KEY
 from google import genai
-from .prompt_settings import AI_ROLE_TRIAL
+from .prompt_settings import SYSTEM_PROMPT_TRIAL
 
 
 def get_response_from_germini(user_prompt, resources="No resources provided"): # from google import genai
@@ -8,7 +8,7 @@ def get_response_from_germini(user_prompt, resources="No resources provided"): #
     client = genai.Client(api_key=GERMINI_API_KEY)
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash", contents=AI_ROLE_TRIAL + resources + "User question: " + user_prompt
+        model="gemini-2.5-flash", contents=SYSTEM_PROMPT_TRIAL + resources + "User question: " + user_prompt
     )
     # print(response.text)
     return response.text
