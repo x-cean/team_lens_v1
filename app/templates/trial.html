@@ -14,8 +14,12 @@
     </div>
     <h1>Upload a reference file and let AI answer your questions!</h1>
     <h3>Currently supporting: .pdf</h3>
+    <div id="upload-cta">
+        <button id="showUploadBtn" type="button">Upload a file here</button>
+    </div>
 
-    <form id="chatForm" enctype="multipart/form-data">
+    <!-- Upload Section (separate from chat) -->
+    <div id="upload-section" style="display:none;">
         <div id="drop_zone">
             Drag & drop a file here or click to select
             <div id="fileName"></div>
@@ -25,6 +29,11 @@
             <div id="uploadStatus"></div>
         </div>
         <input type="file" name="file" id="fileInput" style="display:none;">
+        <div id="uploadedFileInfo" style="display:none;"></div>
+    </div>
+
+    <!-- Chat Section -->
+    <form id="chatForm">
         <div id="chat-board">
             <div id="chat"></div>
             <div id="chat-input-row">
@@ -41,6 +50,17 @@
     <script>
         // Variable to store chatId for the current session (not persisted)
         let chatId = null;
+        // Store uploaded file path returned by server
+        let uploadedFilePath = null;
+        let uploadedOriginalName = null;
+        const showUploadBtn = document.getElementById('showUploadBtn');
+        const uploadSection = document.getElementById('upload-section');
+
+        // Reveal upload interface when user clicks CTA button
+        showUploadBtn.addEventListener('click', () => {
+            uploadSection.style.display = 'block';
+            showUploadBtn.style.display = 'none';
+        });
 
         // Drag and drop for file upload
         const dropZone = document.getElementById('drop_zone');
@@ -49,13 +69,69 @@
         const progressWrap = document.getElementById('uploadProgressContainer');
         const progressBar = document.getElementById('uploadProgressBar');
         const uploadStatus = document.getElementById('uploadStatus');
+        const uploadedFileInfo = document.getElementById('uploadedFileInfo');
+        let isUploading = false;
 
-        function showSelectedFileName() {
+        async function autoUploadSelectedFile() {
             const f = fileInput.files && fileInput.files[0];
-            if (f) {
-                fileNameEl.textContent = `Selected file: ${f.name}`;
-            } else {
+            if (!f || isUploading) return;
+
+            // Reset previously uploaded info when a new file is selected
+            uploadedFilePath = null;
+            uploadedOriginalName = null;
+            uploadedFileInfo.style.display = 'none';
+            uploadedFileInfo.textContent = '';
+
+            // Show selected file name
+            fileNameEl.textContent = `Selected file: ${f.name}`;
+
+            // Prepare UI for upload progress
+            isUploading = true;
+            progressBar.style.width = '0%';
+            progressWrap.style.display = 'block';
+            progressWrap.setAttribute('aria-valuenow', '0');
+            uploadStatus.textContent = '';
+
+            const formData = new FormData();
+            formData.append('file', f);
+
+            try {
+                const data = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/upload');
+                    xhr.upload.onprogress = (evt) => {
+                        if (evt.lengthComputable) {
+                            const percent = Math.round((evt.loaded / evt.total) * 100);
+                            progressBar.style.width = percent + '%';
+                            progressWrap.setAttribute('aria-valuenow', String(percent));
+                        }
+                    };
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try { resolve(JSON.parse(xhr.responseText)); }
+                            catch (err) { reject(err); }
+                        } else {
+                            reject(new Error('Upload failed with status ' + xhr.status));
+                        }
+                    };
+                    xhr.onerror = () => reject(new Error('Network error'));
+                    xhr.send(formData);
+                });
+
+                // Finalize upload UI
+                progressWrap.style.display = 'none';
+                uploadedFilePath = data.file_path;
+                uploadedOriginalName = data.original_name;
+                // Keep uploadStatus empty to avoid duplicate messaging
+                // Remove the temporary "Selected file: ..." line after upload completes
                 fileNameEl.textContent = '';
+                uploadedFileInfo.style.display = 'block';
+                uploadedFileInfo.textContent = `File uploaded: ${uploadedOriginalName}`;
+            } catch (err) {
+                progressWrap.style.display = 'none';
+                uploadStatus.textContent = 'Upload failed. Please try again.';
+            } finally {
+                isUploading = false;
             }
         }
 
@@ -66,12 +142,12 @@
             e.preventDefault(); dropZone.style.background = '';
             if (e.dataTransfer.files.length) {
                 fileInput.files = e.dataTransfer.files;
-                showSelectedFileName();
+                autoUploadSelectedFile();
             }
         });
-        fileInput.addEventListener('change', showSelectedFileName);
+        fileInput.addEventListener('change', autoUploadSelectedFile);
 
-        // Chat and file upload in one form
+        // Chat only form
         const chat = document.getElementById('chat');
         document.getElementById('chatForm').onsubmit = async function(e) {
             e.preventDefault();
@@ -82,11 +158,11 @@
             document.getElementById('message').value = '';
             chat.scrollTop = chat.scrollHeight;
 
-            // Prepare form my_data for sending
+            // Prepare form data for sending (no file here)
             const formData = new FormData();
             formData.append('question', msg);
-            if (fileInput.files[0]) {
-                formData.append('file', fileInput.files[0]);
+            if (uploadedFilePath) {
+                formData.append('file_path', uploadedFilePath);
             }
 
             // Only append chat_id if it exists (for follow-up messages)
@@ -97,32 +173,13 @@
             // Choose endpoint: /ask for new chat, /ask/{chatId} for ongoing chat
             const url = chatId ? `/ask/${chatId}` : '/ask';
 
-            // Send the request with progress if a file is included
-            const hasFile = !!fileInput.files[0];
-
-            // Prepare UI for upload progress
-            if (hasFile) {
-                progressBar.style.width = '0%';
-                progressWrap.style.display = 'block';
-                progressWrap.setAttribute('aria-valuenow', '0');
-                uploadStatus.textContent = '';
-            }
+            // No file upload progress on chat submission anymore
 
             let data;
             try {
                 data = await new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', url);
-
-                    if (hasFile) {
-                        xhr.upload.onprogress = (evt) => {
-                            if (evt.lengthComputable) {
-                                const percent = Math.round((evt.loaded / evt.total) * 100);
-                                progressBar.style.width = percent + '%';
-                                progressWrap.setAttribute('aria-valuenow', String(percent));
-                            }
-                        };
-                    }
 
                     xhr.onload = () => {
                         if (xhr.status >= 200 && xhr.status < 300) {
@@ -139,10 +196,6 @@
                     xhr.send(formData);
                 });
             } catch (err) {
-                if (hasFile) {
-                    progressWrap.style.display = 'none';
-                    uploadStatus.textContent = 'Upload failed. Please try again.';
-                }
                 // Also show an error message from bot area to keep feedback consistent
                 chat.innerHTML += `<div class="chat-msg bot"><div class="bubble">Sorry, something went wrong sending your request.</div></div>`;
                 chat.scrollTop = chat.scrollHeight;
@@ -180,12 +233,7 @@
             chat.appendChild(botMsg);
             chat.scrollTop = chat.scrollHeight;
 
-            // Finalize upload UI
-            if (hasFile) {
-                // Hide progress bar and show completion message with file name
-                progressWrap.style.display = 'none';
-                uploadStatus.textContent = `You uploaded a file: ${fileInput.files[0].name}`;
-            }
+            // No upload UI changes on chat anymore
         };
     </script>
 </body>

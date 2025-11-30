@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 import os
+import re
 
 from app.services.rag.workflow_3_rag_chroma_trial_users import rag_workflow_3
 from app.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
@@ -35,40 +36,48 @@ question: Annotated[str, Form(...)],
 chat_id: Annotated[int | None, Form(None)],
 session: Annotated[Session, Depends(fastapi_sql_init)]
 """
-@router.post("/ask")
-async def ask(
-    file: UploadFile | None = File(None),
-    question: str = Form(...),
-    chat_id: int | None = Form(None),
-    session: Session = Depends(fastapi_sql_init)
-):
-    import os
+@router.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    """Accept a file upload and save it temporarily using its original name.
+
+    Returns JSON with the absolute file_path and original_name.
+    """
     import tempfile
 
-    # Read the uploaded file content (async-safe); returns bytes or None
-    content = await file.read() if file else None
+    # Sanitize the filename to avoid directory traversal and unsafe chars
+    original_name = os.path.basename(file.filename or "uploaded_file")
+    name, ext = os.path.splitext(original_name)
+    # allow letters, numbers, dash, underscore, dot in base name
+    safe_name = re.sub(r"[^A-Za-z0-9._-]", "_", name).strip("._-") or "file"
+    safe_filename = safe_name + ext
 
-    temp_pdf_path = None
-    # Write a temporary file only if non-empty content was provided
-    if content:
-        fd, temp_pdf_path = tempfile.mkstemp(suffix=".pdf", prefix="team_lens_upload_")
-        os.close(fd)
-        with open(temp_pdf_path, "wb") as f:
-            f.write(content)
+    # Create a unique temp directory to avoid collisions while keeping original name
+    temp_dir = tempfile.mkdtemp(prefix="team_lens_upload_")
+    save_path = os.path.join(temp_dir, safe_filename)
 
+    content = await file.read()
+    with open(save_path, "wb") as f:
+        f.write(content)
+
+    return JSONResponse({
+        "file_path": save_path,
+        "original_name": original_name
+    })
+
+
+@router.post("/ask")
+async def ask(
+    question: str = Form(...),
+    chat_id: int | None = Form(None),
+    file_path: str | None = Form(None),
+    session: Session = Depends(fastapi_sql_init)
+):
     # call the function
     answer = rag_workflow_3(
         user_query=question,
-        file_path=temp_pdf_path if content else None,
+        file_path=file_path,
         top_k=3,
     )
-
-    # Clean up temporary file
-    if temp_pdf_path and os.path.exists(temp_pdf_path):
-        try:
-            os.remove(temp_pdf_path)
-        except OSError:
-            pass
 
     data_manager = PostgresDataManager(session=session)
     if chat_id is None:
@@ -94,24 +103,10 @@ async def ask(
 @router.post("/ask/{chat_id}")
 async def ask(
     chat_id: int,
-    file: UploadFile | None = File(None),
-    question: str = Form(...), # better go with question: Annotated[str, Form()] etc.
+    question: str = Form(...),  # better go with question: Annotated[str, Form()] etc.
+    file_path: str | None = Form(None),
     session: Session = Depends(fastapi_sql_init),
 ):
-    import os
-    import tempfile
-
-    filename = file.filename if file else None #todo, now filename is here but how about embedding?
-
-    content = await file.read() if file else None
-
-    temp_pdf_path = None
-    if content:
-        fd, temp_pdf_path = tempfile.mkstemp(suffix=".pdf", prefix="team_lens_upload_")
-        os.close(fd)
-        with open(temp_pdf_path, "wb") as f:
-            f.write(content)
-
     # get the latest 10 messages from the chat history and format them with system prompt
     data_manager = PostgresDataManager(session=session)
     chat_history = data_manager.get_trial_chat_history_by_id(chat_id)
@@ -135,17 +130,10 @@ async def ask(
     # call the function workflow 3
     answer = rag_workflow_3(
         user_query=question,
-        file_path=temp_pdf_path if content else None,
+        file_path=file_path,
         messages=messages,
         top_k=3
     )
-
-    # Clean up temporary file
-    if temp_pdf_path and os.path.exists(temp_pdf_path):
-        try:
-            os.remove(temp_pdf_path)
-        except OSError:
-            pass
 
     # save the user message
     a_question_message = TrialMessage(
