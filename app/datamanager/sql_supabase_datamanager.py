@@ -2,7 +2,7 @@ import datetime
 import uuid
 
 from .datamanager_interface import DataManagerInterface
-from .models import User, Chat, Message
+from .models_trial_users import User, Chat, Message
 from .sql_database_init import supabase_init, sql_init
 from datetime import datetime
 from sqlmodel import SQLModel, create_engine, Session, select

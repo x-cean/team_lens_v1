@@ -3,7 +3,7 @@ from app.logger import logger
 from typing import Any
 
 from .datamanager_interface import DataManagerInterface
-from .models import User, UsersPublic, Chat, ChatsPublic, Message, TrialChat, TrialMessage
+from .models_trial_users import User, UsersPublic, Chat, ChatsPublic, Message, TrialChat, TrialMessage
 
 
 class PostgresDataManager(DataManagerInterface):

@@ -4,10 +4,10 @@ from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 import os
 
-from app.services.rag.workflow_3_rag_chroma_trialusers import rag_workflow_3
+from app.services.rag.workflow_3_rag_chroma_trial_users import rag_workflow_3
 from app.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
-from app.datamanager.models import TrialMessage
+from app.datamanager.models_trial_users import TrialMessage
 from app.datamanager.sql_datamanager import PostgresDataManager
 from app.datamanager.sql_database_init import fastapi_sql_init
 
