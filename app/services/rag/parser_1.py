@@ -1,3 +1,8 @@
+"""
+Langchain docling file loader and text extractor utilities
+"""
+
+
 from pypdf import PdfReader
 from langchain_docling import DoclingLoader
 

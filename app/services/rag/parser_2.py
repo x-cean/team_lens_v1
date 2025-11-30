@@ -1,3 +1,11 @@
+"""
+docling file loader
+"""
+
+#todo: need to be further implemented.
+# Added this becasue the langchain docling loader did not work well for some pdfs.
+
+
 from docling.document_converter import DocumentConverter
 from docling.chunking import HybridChunker
 
