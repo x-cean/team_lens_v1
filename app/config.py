@@ -5,15 +5,16 @@ from pathlib import Path
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-GERMINI_API_KEY = os.getenv("GERMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GERMINI_API_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+CHROMA_API_KEY = os.getenv("CHROMA_CLOUD_API_KEY")
+CHROMA_TENANT_ID = os.getenv("CHROMA_CLOUD_TENANT_ID")
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPABASE_URL_2 = os.getenv("SUPABASE_URL_2")
 SUPABASE_DB_STRING = os.getenv("SUPABASE_DB_STRING")
 SUPABASE_DB_PASSWORD = os.getenv("SUPABASE_DB_PASSWORD")
-CHROMA_API_KEY = os.getenv("CHROMA_CLOUD_API_KEY")
-CHROMA_TENANT_ID = os.getenv("CHROMA_CLOUD_TENANT_ID")
 
 # ---------- Project Paths (centralized) ----------
 # Project root: package root (team_lens_v1)
