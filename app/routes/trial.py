@@ -32,13 +32,13 @@ better use annotation for File/Form/Depends
 
 from typing import Annotated
 
-file: Annotated[UploadFile | None, File(None)],
+file: Annotated[UploadFile | None, File(None)], # tried this but gave error
 question: Annotated[str, Form(...)],
 chat_id: Annotated[int | None, Form(None)],
 session: Annotated[Session, Depends(fastapi_sql_init)]
 """
 @router.post("/upload")
-async def upload_file(file: Annotated[UploadFile | None, File(None)]):
+async def upload_file(file: UploadFile = File(...)):
     """
     Accept a file upload and save it temporarily using its original name.
     Returns JSON with the absolute file_path and original_name.
