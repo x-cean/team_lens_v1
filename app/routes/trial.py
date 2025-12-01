@@ -9,7 +9,7 @@ from app.services.rag.workflow_3_rag_chroma_trial_users import rag_workflow_3
 from app.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
 from app.datamanager.models_trial_users import TrialMessage
-from app.datamanager.sql_datamanager import PostgresDataManager
+from app.datamanager.sql_trial_datamanager import TrialSQLDataManager
 from app.datamanager.sql_database_init import fastapi_sql_init
 
 
@@ -79,7 +79,7 @@ async def ask(
         top_k=3,
     )
 
-    data_manager = PostgresDataManager(session=session)
+    data_manager = TrialSQLDataManager(session=session)
     if chat_id is None:
         a_trial_chat = data_manager.create_trial_chat()
         chat_id = a_trial_chat.id
@@ -108,7 +108,7 @@ async def ask(
     session: Session = Depends(fastapi_sql_init),
 ):
     # get the latest 10 messages from the chat history and format them with system prompt
-    data_manager = PostgresDataManager(session=session)
+    data_manager = TrialSQLDataManager(session=session)
     chat_history = data_manager.get_trial_chat_history_by_id(chat_id)
     chat_history_system = [{"role": "system", "content": SYSTEM_PROMPT_TRIAL}]
     chat_history_formatted = (
@@ -117,15 +117,6 @@ async def ask(
         else None
     )
     messages = chat_history_system + chat_history_formatted if chat_history_formatted else None
-
-    # # call the function workflow 1
-    # answer = rag_workflow_1(
-    #     user_query=question,
-    #     pdf_path=temp_pdf_path if content else None,
-    #     messages=messages,
-    #     threshold=0.4,
-    #     top_k=3,
-    # )
 
     # call the function workflow 3
     answer = rag_workflow_3(

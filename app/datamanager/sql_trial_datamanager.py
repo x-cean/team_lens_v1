@@ -6,11 +6,11 @@ from .datamanager_interface import DataManagerInterface
 from .models_trial_users import User, UsersPublic, Chat, ChatsPublic, Message, TrialChat, TrialMessage
 
 
-class PostgresDataManager(DataManagerInterface):
+class TrialSQLDataManager(DataManagerInterface):
 
     def __init__(self, *, session: Session):
         if session is None:
-            logger.error("Attempt to initiate PostgresDataManager without session")
+            logger.error("Attempt to initiate SQL DataManager without session")
             raise ValueError("Postgres session cannot be None")
 
         logger.info("Creating postgres session")
@@ -18,51 +18,22 @@ class PostgresDataManager(DataManagerInterface):
         logger.info("Postgres session created successfully")
 
     def create_user(self, user_create: User) -> User:
-        self.session.add(user_create)
-        self.session.commit()
-        logger.info(f"User {user_create.name} created successfully with ID {user_create.id}")
-
-        self.session.refresh(user_create)
-        return user_create
+        pass
 
     def get_all_users(self, skip: int = 0, limit: int = 100) -> Any:
-        count_statement = select(func.count()).select_from(User)
-        count = self.session.exec(count_statement).one()
-
-        statement = select(User).offset(skip).limit(limit)
-        users = self.session.exec(statement).all()
-
-        return UsersPublic(data=users, count=count)
+        pass
 
     def get_user_by_id(self, user_id):
-        statement = select(User).where(User.id == user_id)
-        session_user = self.session.exec(statement).first()
-        return session_user
+        pass
 
     def get_user_by_name(self, user_name):
-        statement = select(User).where(User.name == user_name)
-        session_user = self.session.exec(statement).first()
-        return session_user
+        pass
 
     def get_user_by_email(self, user_email):
-        statement = select(User).where(User.email == user_email)
-        session_user = self.session.exec(statement).first()
-        return session_user
+        pass
 
     def get_user_chats(self, user_id, skip: int = 0, limit: int = 100):
-        session_user = self.get_user_by_id(user_id)
-        if not session_user:
-            logger.error(f"User with ID {user_id} not found")
-            return None
-
-        count_statement = (select(func.count()).select_from(Chat)
-                           .where(Chat.owner_id == user_id))
-        count = self.session.exec(count_statement).one()
-
-        statement = select(Chat).where(Chat.owner_id == user_id).offset(skip).limit(limit)
-        user_chats = self.session.exec(statement).all()
-
-        return ChatsPublic(data=user_chats, count=count)
+        pass
 
     def get_chat_by_id(self, chat_id):
         pass
@@ -71,14 +42,7 @@ class PostgresDataManager(DataManagerInterface):
         pass
 
     def delete_user(self, user_id):
-        user = self.get_user_by_id(user_id)
-        if not user:
-            logger.error(f"User with ID {user_id} not found")
-            return Message(message="User not found")
-        self.session.delete(user)
-        self.session.commit()
-        return Message(message="User deleted successfully"), "User deleted successfully"
-        # todo: what to return here?
+        pass
 
     def create_chat(self, chat: Chat, user_id):
         pass
