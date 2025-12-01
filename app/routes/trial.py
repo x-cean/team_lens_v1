@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, UploadFile, File, Form, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
+from typing import Annotated
 import os
 import re
 
@@ -37,9 +38,9 @@ chat_id: Annotated[int | None, Form(None)],
 session: Annotated[Session, Depends(fastapi_sql_init)]
 """
 @router.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    """Accept a file upload and save it temporarily using its original name.
-
+async def upload_file(file: Annotated[UploadFile | None, File(None)]):
+    """
+    Accept a file upload and save it temporarily using its original name.
     Returns JSON with the absolute file_path and original_name.
     """
     import tempfile
