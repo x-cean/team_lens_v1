@@ -3,7 +3,7 @@ from app.logger import logger
 from typing import Any
 
 from .datamanager_interface import DataManagerInterface
-from .models_trial_users import User, UsersPublic, Chat, ChatsPublic, Message, TrialChat, TrialMessage
+from .models_trial_users import TrialChat, TrialMessage
 
 
 class TrialSQLDataManager(DataManagerInterface):
@@ -17,7 +17,7 @@ class TrialSQLDataManager(DataManagerInterface):
         self.session = session
         logger.info("Postgres session created successfully")
 
-    def create_user(self, user_create: User) -> User:
+    def create_user(self, user_create):
         pass
 
     def get_all_users(self, skip: int = 0, limit: int = 100) -> Any:
@@ -44,7 +44,7 @@ class TrialSQLDataManager(DataManagerInterface):
     def delete_user(self, user_id):
         pass
 
-    def create_chat(self, chat: Chat, user_id):
+    def create_chat(self, chat, user_id):
         pass
 
     def update_chat(self, chat_id):
@@ -53,7 +53,7 @@ class TrialSQLDataManager(DataManagerInterface):
     def delete_chat(self, chat_id):
         pass
 
-    def create_message(self, msg: Message):
+    def create_message(self, message):
         pass
 
     def create_trial_chat(self):
