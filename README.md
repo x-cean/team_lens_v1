@@ -5,7 +5,6 @@ The goal is to build a team-knowledge-base-intelligence that helps us get up-to-
 It can also serve as a learning partner via chatting, interative word gaming and so on.
 
 **What's working 🌟**  
-**Branch mvp_1**
 A trial page where visitors can upload a file and discuss with the ai chatbot about it without the need to log-in. 
 I'm testing different RAG pipelines and that's why there're a few of them in the backend.
 
