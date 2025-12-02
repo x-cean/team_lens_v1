@@ -5,6 +5,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 """models for the trial page, made using sqlmodel"""
 # trial page models - no login, no history
+
 class TrialMessage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     text: str
@@ -29,10 +30,27 @@ class TrialMessage(SQLModel, table=True):
     def __str__(self):
         return f"TrialMessage(created_at: {self.created_at})"
 
+class TrialFile(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    file_name: str
+    file_path: str
+    uploaded_at: datetime = Field(default_factory=datetime.now)
+    chat_id: int | None = Field(foreign_key="trialchat.id", nullable=False, ondelete="CASCADE")
+    chat: "TrialChat" = Relationship(back_populates="files")
+
+
+    def __repr__(self):
+        return f"TrialFile(file_name: {self.file_name}, uploaded_at: {self.uploaded_at})"
+
+    def __str__(self):
+        return f"TrialFile(file_name: {self.file_name}, uploaded_at: {self.uploaded_at})"
+
+
 class TrialChat(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     created_at: datetime = Field(default_factory=datetime.now)
     messages: list[TrialMessage] = Relationship(back_populates="chat", cascade_delete=True)
+    files: list[TrialFile] = Relationship(back_populates="chat", cascade_delete=True)
 
     def __repr__(self):
         return f"TrialChat, created_at: {self.created_at})"

@@ -2,7 +2,6 @@ from fastapi import APIRouter, Request, UploadFile, File, Form, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
-from typing import Annotated
 import os
 import re
 
@@ -27,16 +26,7 @@ def trial_page(request: Request):
 def trial_post(request: Request):
     pass
 
-"""
-better use annotation for File/Form/Depends
 
-from typing import Annotated
-
-file: Annotated[UploadFile | None, File(None)], # tried this but gave error
-question: Annotated[str, Form(...)],
-chat_id: Annotated[int | None, Form(None)],
-session: Annotated[Session, Depends(fastapi_sql_init)]
-"""
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     """
