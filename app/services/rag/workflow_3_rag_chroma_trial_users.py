@@ -18,7 +18,9 @@ CHROMA_LOCAL_DATABASE_PATH = CHROMA_PERSISTENT_DIR
 
 
 def get_absolute_path(relative_path: str | Path) -> str:
-    """Convert to absolute path, creating directories if needed."""
+    """
+    Convert to absolute path, creating directories if needed.
+    """
     path = Path(relative_path)
     if not path.is_absolute():
         path = path.resolve()
@@ -26,7 +28,7 @@ def get_absolute_path(relative_path: str | Path) -> str:
     return f"{path}"
 
 
-def file_embeddings(file_path: str) -> tuple[List[str], List[str], List[dict]]:
+def parse_file(file_path: str) -> tuple[List[str], List[str], List[dict]]:
     """
     Converts a PDF file to docs
     """
@@ -36,18 +38,42 @@ def file_embeddings(file_path: str) -> tuple[List[str], List[str], List[dict]]:
     return ids, docs, metadatas_list
 
 
-def rag_workflow_3(user_query: str,
-                   file_path: str | None = None,
-                   file_name: str | None = None,
-                   user_id: str | None = None,
-                   messages: List[dict] | None = None,
-                   top_k: int = 3) -> str:
+def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
+    """
+    Embeds file content into Chroma vector database
+    """
+    # no file edge case
+    if file_path is None:
+        logger.info("No file path provided, skipping document addition to Chroma collection.")
+        return
 
+    chroma_client, chromadb_name, user_collection = get_chroma_collection(user_id)
+
+    logger.info(f"File path provided: {file_path}, proceeding to add documents to Chroma collection.")
+    # collect file embeddings if file_path is given
+    ids, docs, metadatas_list = parse_file(file_path)
+    # add documents to user collection
+    add_documents_to_user_collection(client=chroma_client,
+                                     user_id=chromadb_name,
+                                     doc_ids=ids,
+                                     doc_documents=docs,
+                                     metadatas_list=metadatas_list)
+    logger.info(f"Documents added to Chroma collection for user: {chromadb_name}")
+    return user_collection
+
+
+def get_chroma_collection(user_id: str | None):
+    """
+    connect to chroma persistent client and get or create user collection
+    trial users all go to the same collection: "trial_user"
+    users with user_id go to their own collection: user_id
+    """
     # secure vector db path
     vector_db_path = get_absolute_path(CHROMA_LOCAL_DATABASE_PATH)
     # create path if not exist
     if not os.path.exists(vector_db_path):
         os.makedirs(vector_db_path)
+
     # determine chroma collection name
     if user_id is None:
         chromadb_name = "trial_user"
@@ -60,21 +86,17 @@ def rag_workflow_3(user_query: str,
     user_collection = create_user_collection_with_openai_embedding(client=chroma_client,
                                                                    user_id=chromadb_name)
     logger.info(f"Chroma collection ready: {user_collection.name}")
+    return chroma_client, chromadb_name, user_collection
 
 
-    if file_path is None:
-        logger.info("No file path provided, skipping document addition to Chroma collection.")
-    else:
-        logger.info(f"File path provided: {file_path}, proceeding to add documents to Chroma collection.")
-        # collect file embeddings if file_path is given
-        ids, docs, metadatas_list = file_embeddings(file_path)
-        # add documents to user collection
-        add_documents_to_user_collection(client=chroma_client,
-                                         user_id=chromadb_name,
-                                         doc_ids=ids,
-                                         doc_documents=docs,
-                                         metadatas_list=metadatas_list)
-        logger.info(f"Documents added to Chroma collection for user: {chromadb_name}")
+def rag_workflow_3(user_query: str,
+                   file_path: str | None = None,
+                   file_name: str | None = None,
+                   user_id: str | None = None,
+                   messages: List[dict] | None = None,
+                   top_k: int = 3) -> str:
+
+    user_collection = embed_file_to_chroma_vector_db(file_path, user_id)
 
     # query collection and get relevant text resources
     query_results = query_collection(collection=user_collection,
@@ -111,6 +133,9 @@ def rag_workflow_3(user_query: str,
     answer = get_response_from_openai(user_prompt=user_query, resources=text_resources,
                                       model="gpt-5-mini", messages=messages)
     return answer
+
+
+
 
 
 
