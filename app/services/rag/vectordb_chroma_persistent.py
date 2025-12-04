@@ -5,13 +5,6 @@ from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 from datetime import datetime
 
 
-# CHROMA_LOCAL_DATABASE_PATH = "/my_data/database/chroma_persistent"
-# def create_absolute_path(relative_path: str) -> str:
-#     base_dir = os.getcwd()
-#     absolute_path = os.path.join(base_dir, relative_path)
-#     return absolute_path
-
-
 def create_persistent_db_folder_if_not_exist(path: str):
     if not os.path.exists(path):
         os.makedirs(path)
@@ -62,7 +55,6 @@ def collect_ids_and_chunks_and_metadata_from_chunks(chunks):
     return ids, chunks, metadatas_list
     # todo: remember how to collect metadata from chunk.meta (refer to test2, get headers and sources)
 
-
 def establish_chroma_persistent_client(path):
     path = create_persistent_db_folder_if_not_exist(path)
     user_chroma_client = chromadb.PersistentClient(path=path)
@@ -75,7 +67,7 @@ def get_user_collection_if_exists(client, user_id: str):
     except Exception as e: # todo: figure out the specific error
         return e
 
-def create_user_collection_with_openai_embedding(client, user_id: str):
+def get_or_create_user_collection_with_openai_embedding(client, user_id: str):
     collection = client.get_or_create_collection(
         name=user_id,
         embedding_function=OpenAIEmbeddingFunction(
