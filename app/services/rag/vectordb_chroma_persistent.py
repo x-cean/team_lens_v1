@@ -20,7 +20,7 @@ def create_persistent_db_folder_if_not_exist(path: str):
 def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=None,
                                                      workspace_id: str | None=None):
     """
-    downstream step after document loading with docling loader
+    downstream step after document loading with langchain docling loader
     Collects ids, documents, and metadata from a list of Document objects
     important step where metadata such as source is added
     """
@@ -30,7 +30,14 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
     for i, doc in enumerate(docs):
         ids.append(f"{i + 1}")
         documents.append(doc.page_content)
-        metadata_dict = {"source": doc.metadata.get("source", "unknown")}
+        metadata_dict = {"source": doc.metadata.get("source", "unknown"),
+                         "filename": doc.metadata["dl_meta"]["origin"]["filename"] \
+                             if ("dl_meta" in doc.metadata and "origin" in doc.metadata["dl_meta"]
+                                 and "filename" in doc.metadata["dl_meta"]["origin"]) \
+                             else "unknown",
+                         "headings": doc.metadata["dl_meta"]["headings"] \
+                         if ("dl_meta" in doc.metadata and "headings" in doc.metadata) \
+                         else []}
         if workspace_id:
             metadata_dict["workspace_id"] = workspace_id
         if user_id:
