@@ -7,7 +7,7 @@ from app.config import CHROMA_PERSISTENT_DIR
 from app.services.rag.parser_1 import docling_file_loader
 from app.services.rag.vectordb_chroma_persistent import (collect_ids_and_documents_and_metadata_from_docs,
                                                          establish_chroma_persistent_client,
-                                                         create_user_collection_with_openai_embedding,
+                                                         get_or_create_user_collection_with_openai_embedding,
                                                          add_documents_to_user_collection, query_collection)
 from app.services.llm.open_ai_functions import get_response_from_openai
 
@@ -83,7 +83,7 @@ def get_chroma_collection(user_id: str | None):
     # establish chroma persistent client
     chroma_client = establish_chroma_persistent_client(vector_db_path)
     # create or get user collection
-    user_collection = create_user_collection_with_openai_embedding(client=chroma_client,
+    user_collection = get_or_create_user_collection_with_openai_embedding(client=chroma_client,
                                                                    user_id=chromadb_name)
     logger.info(f"Chroma collection ready: {user_collection.name}")
     return chroma_client, chromadb_name, user_collection
