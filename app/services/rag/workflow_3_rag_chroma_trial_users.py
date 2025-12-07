@@ -38,30 +38,6 @@ def parse_file(file_path: str) -> tuple[List[str], List[str], List[dict]]:
     return ids, docs, metadatas_list
 
 
-def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
-    """
-    Embeds file content into Chroma vector database
-    """
-    # no file edge case
-    if file_path is None:
-        logger.info("No file path provided, skipping document addition to Chroma collection.")
-        return
-
-    chroma_client, chromadb_name, user_collection = get_chroma_collection(user_id)
-
-    logger.info(f"File path provided: {file_path}, proceeding to add documents to Chroma collection.")
-    # collect file embeddings if file_path is given
-    ids, docs, metadatas_list = parse_file(file_path)
-    # add documents to user collection
-    add_documents_to_user_collection(client=chroma_client,
-                                     user_id=chromadb_name,
-                                     doc_ids=ids,
-                                     doc_documents=docs,
-                                     metadatas_list=metadatas_list)
-    logger.info(f"Documents added to Chroma collection for user: {chromadb_name}")
-    return user_collection
-
-
 def get_chroma_collection(user_id: str | None):
     """
     connect to chroma persistent client and get or create user collection
@@ -87,6 +63,30 @@ def get_chroma_collection(user_id: str | None):
                                                                    user_id=chromadb_name)
     logger.info(f"Chroma collection ready: {user_collection.name}")
     return chroma_client, chromadb_name, user_collection
+
+
+def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
+    """
+    Embeds file content into Chroma vector database
+    """
+    # no file edge case
+    if file_path is None:
+        logger.info("No file path provided, skipping document addition to Chroma collection.")
+        return
+
+    chroma_client, chromadb_name, user_collection = get_chroma_collection(user_id)
+
+    logger.info(f"File path provided: {file_path}, proceeding to add documents to Chroma collection.")
+    # collect file embeddings if file_path is given
+    ids, docs, metadatas_list = parse_file(file_path)
+    # add documents to user collection
+    add_documents_to_user_collection(client=chroma_client,
+                                     user_id=chromadb_name,
+                                     doc_ids=ids,
+                                     doc_documents=docs,
+                                     metadatas_list=metadatas_list)
+    logger.info(f"Documents added to Chroma collection for user: {chromadb_name}")
+    return user_collection
 
 
 def rag_workflow_3(user_query: str,

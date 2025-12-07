@@ -92,10 +92,11 @@ def add_documents_to_user_collection(client,
     )
     return collection
 
-def query_collection(collection, query_text: str, n_results: int = 3):
+def query_collection(collection, query_text: str, n_results: int = 3, file_name: str | None = None):
     results = collection.query(
         query_texts=[query_text],
-        n_results=n_results
+        n_results=n_results,
+        where={"filename": file_name} if file_name else None
     )
     return results
 

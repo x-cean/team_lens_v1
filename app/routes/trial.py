@@ -5,7 +5,7 @@ from sqlmodel import Session
 import os
 import re
 
-from app.services.rag.workflow_3_rag_chroma_trial_users import rag_workflow_3
+from app.services.rag.workflow_3_rag_chroma_trial_users import rag_workflow_3, embed_file_to_chroma_vector_db
 from app.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
 from app.datamanager.models_trial_users import TrialMessage
@@ -50,7 +50,11 @@ async def upload_file(file: UploadFile = File(...)):
     with open(save_path, "wb") as f:
         f.write(content)
 
+    # Embed the file into Chroma vector DB for trial users
+    embed_file_to_chroma_vector_db(file_path=save_path, user_id=None)
+
     return JSONResponse({
+        "action": "file uploaded and embedded",
         "file_path": save_path,
         "original_name": original_name
     })
