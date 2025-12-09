@@ -96,6 +96,19 @@ class TrialSQLDataManager(DataManagerInterface):
             return None
         return messages[-10:]  # return the last 10 messages
 
+    def get_trial_files_by_chat_id(self, chat_id: int):
+        """
+        Retrieves the files associated with a given trial chat ID.
+        """
+        trial_chat = self.get_trial_chat_by_id(chat_id)
+        if not trial_chat:
+            logger.warning(f"No trial chat found for chat ID {chat_id}")
+            return None
+        trial_files = trial_chat.files
+        if not trial_files:
+            logger.info(f"No files found for chat ID {chat_id}")
+            return None
+        return trial_files # return all associated files
 
     def save_trial_message(self, trial_message: TrialMessage) -> TrialMessage:
         """

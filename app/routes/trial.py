@@ -102,13 +102,21 @@ async def ask(
         if chat_history
         else None
     )
+    # combine system prompt and chat history if any, else just None because my openai function can handle that
     messages = chat_history_system + chat_history_formatted if chat_history_formatted else None
 
+    # check whether any file is associated with this chat
+    trial_files = data_manager.get_trial_files_by_chat_id(chat_id)
+    if trial_files:
+        file_name = trial_files[-1].file_name  #todo: assume only last uploaded file per trial chat for now
+    else:
+        file_name = None
     # call the function workflow 3
     answer = rag_workflow_3(
         user_query=question,
         messages=messages,
-        top_k=3
+        top_k=3,
+        file_name=file_name
     )
 
     # save the user message

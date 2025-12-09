@@ -119,7 +119,7 @@ def query_chroma_db(top_k: int, user_query: str, user_id: str | None, file_name:
 
 
 def rag_workflow_3(user_query: str,
-                   upload_file: bool = False,
+                   file_name: str | None = None,
                    user_id: str | None = None,
                    messages: List[dict] | None = None,
                    top_k: int = 3) -> str:
@@ -127,9 +127,9 @@ def rag_workflow_3(user_query: str,
     RAG workflow 3: Chroma vector DB + OpenAI LLM if file is uploaded by user, else just LLM response
     """
     # Determine text resources based on file upload
-    if upload_file:
+    if file_name:
         # Query Chroma DB for relevant documents
-        documents = query_chroma_db(top_k, user_id, user_query)
+        documents = query_chroma_db(top_k, user_id, user_query, file_name)
 
         if documents:
             text_resources = "\n".join(documents)
