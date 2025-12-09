@@ -21,20 +21,31 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
     documents = []
     metadatas_list = []
     for i, doc in enumerate(docs):
+        # append id
         ids.append(f"{i + 1}")
+        # append document content
         documents.append(doc.page_content)
-        metadata_dict = {"source": doc.metadata.get("source", "unknown"),
-                         "filename": doc.metadata["dl_meta"]["origin"]["filename"] \
+        # construct metadata dict
+        # get file name
+        file_name = doc.metadata["dl_meta"]["origin"]["filename"] \
                              if ("dl_meta" in doc.metadata and "origin" in doc.metadata["dl_meta"]
                                  and "filename" in doc.metadata["dl_meta"]["origin"]) \
-                             else "unknown",
-                         "headings": doc.metadata["dl_meta"]["headings"] \
-                         if ("dl_meta" in doc.metadata and "headings" in doc.metadata) \
-                         else []}
+                             else "unknown"
+        # get headings
+        headings_list = doc.metadata["dl_meta"]["headings"] \
+            if ("dl_meta" in doc.metadata and "headings" in doc.metadata["dl_meta"]) \
+            else []
+        # here it can not be a list, need to convert to string (for chroma db metadata)
+        headings = ', '.join(headings_list) if headings_list else ""
+        # construct metadata dict
+        metadata_dict = {"source": doc.metadata.get("source", "unknown"),
+                         "filename": file_name,
+                         "headings": headings}
         if workspace_id:
             metadata_dict["workspace_id"] = workspace_id
         if user_id:
             metadata_dict["user_id"] = user_id
+        # append metadata
         metadatas_list.append(metadata_dict)
     return ids, documents, metadatas_list
 
