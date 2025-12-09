@@ -72,7 +72,7 @@ def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
     # no file edge case
     if file_path is None:
         logger.info("No file path provided, skipping document addition to Chroma collection.")
-        return
+        return get_chroma_collection(user_id)[2]
 
     chroma_client, chromadb_name, user_collection = get_chroma_collection(user_id)
 
