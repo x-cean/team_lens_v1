@@ -96,15 +96,10 @@ def query_chroma_db(top_k: int, user_query: str, user_id: str | None, file_name:
     user_collection = get_chroma_collection(user_id=user_id)
 
     # query collection and get relevant text resources
-    if not file_name:
-        query_results = query_collection(collection=user_collection,
-                                         query_text=user_query,
-                                         n_results=top_k)
-    else:
-        query_results = query_collection(collection=user_collection,
-                                         query_text=user_query,
-                                         n_results=top_k,
-                                         file_name=file_name)
+    query_results = query_collection(collection=user_collection,
+                                     query_text=user_query,
+                                     n_results=top_k,
+                                     file_name=file_name)
 
     # Chroma returns a dict with keys like 'documents', 'ids', 'metadatas'.
     # We safely extract the first list of documents (since we queried with a single text)
@@ -124,23 +119,24 @@ def query_chroma_db(top_k: int, user_query: str, user_id: str | None, file_name:
 
 
 def rag_workflow_3(user_query: str,
-                   chat_id: int | None = None,
+                   upload_file: bool = False,
                    user_id: str | None = None,
                    messages: List[dict] | None = None,
                    top_k: int = 3) -> str:
+    """
+    RAG workflow 3: Chroma vector DB + OpenAI LLM if file is uploaded by user, else just LLM response
+    """
+    # Determine text resources based on file upload
+    if upload_file:
+        # Query Chroma DB for relevant documents
+        documents = query_chroma_db(top_k, user_id, user_query)
 
-    documents = query_chroma_db(top_k, user_id, user_query)
-
-    if file_path and documents:
-        text_resources = "\n".join(documents)
-    elif file_path and not documents:
-        text_resources = "File was given but no relevant info found."
-    elif not file_path and documents:
-        text_resources = ("User did not provide any file. "
-                          "But based on previous documents added by trial user, here is some relevant info:\n" +
-                          "\n".join(documents))
+        if documents:
+            text_resources = "\n".join(documents)
+        else:
+            text_resources = "File was given but no relevant info found."
     else:
-        text_resources = "User did not provide any file, and no relevant info found in the database."
+        text_resources = "No file was given by user."
 
     # Get response from OpenAI using the text resources
     answer = get_response_from_openai(user_prompt=user_query, resources=text_resources,
