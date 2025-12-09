@@ -8,7 +8,7 @@ import re
 from app.services.rag.workflow_3_rag_chroma_trial_users import rag_workflow_3, embed_file_to_chroma_vector_db
 from app.services.llm.prompt_settings import SYSTEM_PROMPT_TRIAL
 
-from app.datamanager.models_trial_users import TrialMessage
+from app.datamanager.models_trial_users import TrialMessage, TrialFile
 from app.datamanager.sql_trial_datamanager import TrialSQLDataManager
 from app.datamanager.sql_database_init import fastapi_sql_init
 
@@ -27,11 +27,29 @@ def trial_post(request: Request):
     pass
 
 
+@router.post("/create-chat")
+async def create_chat(session: Session = Depends(fastapi_sql_init)):
+    """
+    Create a new trial chat session and return its ID.
+    Called when the trial page loads.
+    """
+    data_manager = TrialSQLDataManager(session=session)
+    new_chat = data_manager.create_trial_chat()
+
+    return JSONResponse({
+        "chat_id": new_chat.id
+    })
+
+
 @router.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(
+    file: UploadFile = File(...),
+    chat_id: int = Form(...),
+    session: Session = Depends(fastapi_sql_init)
+):
     """
     Accept a file upload and save it temporarily using its original name.
-    Returns JSON with the absolute file_path and original_name.
+    Add that file information to SQL.
     """
     import tempfile
 
@@ -53,6 +71,15 @@ async def upload_file(file: UploadFile = File(...)):
     # Embed the file into Chroma vector DB for trial users
     embed_file_to_chroma_vector_db(file_path=save_path, user_id=None)
 
+    # Create TrialFile record
+    trial_file = TrialFile(
+        file_name=original_name,
+        file_path=save_path,
+        chat_id=chat_id
+    )
+    session.add(trial_file)
+    session.commit()
+
     return JSONResponse({
         "action": "file uploaded and embedded",
         "file_path": save_path,
@@ -63,7 +90,7 @@ async def upload_file(file: UploadFile = File(...)):
 @router.post("/ask")
 async def ask(
     question: str = Form(...),
-    chat_id: int | None = Form(None),
+    chat_id: int = Form(...),
     file_path: str | None = Form(None),
     session: Session = Depends(fastapi_sql_init)
 ):
@@ -75,9 +102,7 @@ async def ask(
     )
 
     data_manager = TrialSQLDataManager(session=session)
-    if chat_id is None:
-        a_trial_chat = data_manager.create_trial_chat()
-        chat_id = a_trial_chat.id
+
     # save the user message
     a_question_message = TrialMessage(
         chat_id=chat_id,

@@ -50,6 +50,22 @@
     <script>
         // Variable to store chatId for the current session (not persisted)
         let chatId = null;
+
+        // Additional function to initialize a new chat session on page load
+        async function initializeChat() {
+            try {
+                const response = await fetch('/create-chat', { method: 'POST' });
+                const data = await response.json();
+                chatId = data.chat_id;
+                console.log('New chat session initialized:', chatId);
+            } catch (error) {
+                console.error('Failed to initialize chat:', error);
+            }
+        }
+
+        // Add event listener to initialize chat on page load
+        document.addEventListener('DOMContentLoaded', initializeChat);
+
         // Store uploaded file path returned by server
         let uploadedFilePath = null;
         let uploadedOriginalName = null;
@@ -94,6 +110,7 @@
 
             const formData = new FormData();
             formData.append('file', f);
+            formData.append('chat_id', chatId); // Include chat_id for context
 
             try {
                 const data = await new Promise((resolve, reject) => {
@@ -165,13 +182,11 @@
                 formData.append('file_path', uploadedFilePath);
             }
 
-            // Only append chat_id if it exists (for follow-up messages)
-            if (chatId) {
-                formData.append('chat_id', chatId);
-            }
+            // ALWAYS include chat_id (it's created on page load)
+            formData.append('chat_id', chatId);
 
-            // Choose endpoint: /ask for new chat, /ask/{chatId} for ongoing chat
-            const url = chatId ? `/ask/${chatId}` : '/ask';
+            // USE SINGLE ENDPOINT
+            const url = '/ask';
 
             // No file upload progress on chat submission anymore
 
@@ -202,10 +217,6 @@
                 return;
             }
 
-            // If backend returns a chat_id, save it for future messages
-            if (data.chat_id) {
-                chatId = data.chat_id;
-            }
 
             // Convert Markdown answer to HTML and sanitize it
             const htmlStr = marked.parse(data.answer);
