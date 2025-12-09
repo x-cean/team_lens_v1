@@ -91,7 +91,6 @@ async def upload_file(
 async def ask(
     chat_id: int = Form(...),
     question: str = Form(...),  # better go with question: Annotated[str, Form()] etc. ?
-    file_path: str | None = Form(None),
     session: Session = Depends(fastapi_sql_init),
 ):
     # get the latest 10 messages from the chat history and format them with system prompt

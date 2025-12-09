@@ -89,17 +89,22 @@ def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
     return user_collection
 
 
-def rag_workflow_3(user_query: str,
-                   user_id: str | None = None,
-                   messages: List[dict] | None = None,
-                   top_k: int = 3) -> str:
-
+def query_chroma_db(top_k: int, user_query: str, user_id: str | None, file_name: str | None = None) -> list:
+    """
+    Query Chroma vector database for relevant documents
+    """
     user_collection = get_chroma_collection(user_id=user_id)
 
     # query collection and get relevant text resources
-    query_results = query_collection(collection=user_collection,
-                                     query_text=user_query,
-                                     n_results=top_k)
+    if not file_name:
+        query_results = query_collection(collection=user_collection,
+                                         query_text=user_query,
+                                         n_results=top_k)
+    else:
+        query_results = query_collection(collection=user_collection,
+                                         query_text=user_query,
+                                         n_results=top_k,
+                                         file_name=file_name)
 
     # Chroma returns a dict with keys like 'documents', 'ids', 'metadatas'.
     # We safely extract the first list of documents (since we queried with a single text)
@@ -115,6 +120,16 @@ def rag_workflow_3(user_query: str,
         except Exception:
             # Leave documents empty if structure is unexpected
             documents = []
+    return documents
+
+
+def rag_workflow_3(user_query: str,
+                   chat_id: int | None = None,
+                   user_id: str | None = None,
+                   messages: List[dict] | None = None,
+                   top_k: int = 3) -> str:
+
+    documents = query_chroma_db(top_k, user_id, user_query)
 
     if file_path and documents:
         text_resources = "\n".join(documents)
@@ -131,6 +146,9 @@ def rag_workflow_3(user_query: str,
     answer = get_response_from_openai(user_prompt=user_query, resources=text_resources,
                                       model="gpt-5-mini", messages=messages)
     return answer
+
+
+
 
 
 
