@@ -17,7 +17,7 @@ SUPABASE_DB_STRING = os.getenv("SUPABASE_DB_STRING")
 SUPABASE_DB_PASSWORD = os.getenv("SUPABASE_DB_PASSWORD")
 
 # ---------- Project Paths (centralized) ----------
-# Project root: package root (team_lens_v1)
+# Project root: package root (Doc AI)
 PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
 
 # Data storage directories
@@ -30,7 +30,14 @@ SQLITE_DB_FILE: Path = SQLITE_DB_DIR / "team_lens.db"
 SQLITE_URL: str = f"sqlite:///{SQLITE_DB_FILE}"
 
 # Chroma persistent database directory
-CHROMA_PERSISTENT_DIR: Path = DATA_STORAGE_DIR / "chroma_db" / "chroma_persistent"
+
+# Use environment variable to determine which path to use
+IS_DOCKER = os.getenv("RUNNING_IN_DOCKER", "false").lower() == "true"
+
+if IS_DOCKER:
+    CHROMA_PERSISTENT_DIR: Path = DATA_STORAGE_DIR / "chroma_db" / "chroma_persistent" / "chroma_db_docker"
+else:
+    CHROMA_PERSISTENT_DIR: Path = DATA_STORAGE_DIR / "chroma_db" / "chroma_persistent" / "chroma_db_local"
 
 # Logging files
 PROJECT_LOG_FILE: Path = LOGS_DIR / "project.log"

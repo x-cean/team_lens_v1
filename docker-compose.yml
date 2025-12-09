@@ -12,6 +12,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
+      - RUNNING_IN_DOCKER=true
     restart: unless-stopped
 
 volumes:
