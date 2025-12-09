@@ -90,13 +90,11 @@ def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
 
 
 def rag_workflow_3(user_query: str,
-                   file_path: str | None = None,
-                   file_name: str | None = None,
                    user_id: str | None = None,
                    messages: List[dict] | None = None,
                    top_k: int = 3) -> str:
 
-    user_collection = embed_file_to_chroma_vector_db(file_path, user_id)
+    user_collection = get_chroma_collection(user_id=user_id)
 
     # query collection and get relevant text resources
     query_results = query_collection(collection=user_collection,

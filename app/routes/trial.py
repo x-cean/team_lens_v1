@@ -89,41 +89,8 @@ async def upload_file(
 
 @router.post("/ask")
 async def ask(
-    question: str = Form(...),
     chat_id: int = Form(...),
-    file_path: str | None = Form(None),
-    session: Session = Depends(fastapi_sql_init)
-):
-    # call the function
-    answer = rag_workflow_3(
-        user_query=question,
-        file_path=file_path,
-        top_k=3,
-    )
-
-    data_manager = TrialSQLDataManager(session=session)
-
-    # save the user message
-    a_question_message = TrialMessage(
-        chat_id=chat_id,
-        text=question
-    )
-    an_answer_message = TrialMessage(
-        chat_id=chat_id,
-        text=answer,
-        is_system=True,
-        is_user=False
-    )
-    data_manager.save_trial_message(a_question_message)
-    data_manager.save_trial_message(an_answer_message)
-
-    return JSONResponse({"answer": answer, "chat_id": chat_id})
-
-
-@router.post("/ask/{chat_id}")
-async def ask(
-    chat_id: int,
-    question: str = Form(...),  # better go with question: Annotated[str, Form()] etc.
+    question: str = Form(...),  # better go with question: Annotated[str, Form()] etc. ?
     file_path: str | None = Form(None),
     session: Session = Depends(fastapi_sql_init),
 ):
@@ -141,7 +108,6 @@ async def ask(
     # call the function workflow 3
     answer = rag_workflow_3(
         user_query=question,
-        file_path=file_path,
         messages=messages,
         top_k=3
     )
