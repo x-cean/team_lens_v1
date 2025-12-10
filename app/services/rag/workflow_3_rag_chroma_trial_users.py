@@ -93,7 +93,7 @@ def query_chroma_db(top_k: int, user_query: str, user_id: str | None, file_name:
     """
     Query Chroma vector database for relevant documents
     """
-    user_collection = get_chroma_collection(user_id=user_id)
+    user_collection = get_chroma_collection(user_id=user_id)[2]
 
     # query collection and get relevant text resources
     query_results = query_collection(collection=user_collection,
@@ -129,7 +129,7 @@ def rag_workflow_3(user_query: str,
     # Determine text resources based on file upload
     if file_name:
         # Query Chroma DB for relevant documents
-        documents = query_chroma_db(top_k, user_id, user_query, file_name)
+        documents = query_chroma_db(top_k=top_k, user_id=user_id, user_query=user_query, file_name=file_name)
 
         if documents:
             text_resources = "\n".join(documents)
