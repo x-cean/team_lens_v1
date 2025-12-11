@@ -28,13 +28,13 @@ def get_absolute_path(relative_path: str | Path) -> str:
     return f"{path}"
 
 
-def parse_file(file_path: str) -> tuple[List[str], List[str], List[dict]]:
+def parse_file(file_path: str, original_filename: str | None = None) -> tuple[List[str], List[str], List[dict]]:
     """
     Converts a PDF file to docs
     """
     # Extract content and create chunked docs
     docs = docling_file_loader(file_path)
-    ids, docs, metadatas_list = collect_ids_and_documents_and_metadata_from_docs(docs)
+    ids, docs, metadatas_list = collect_ids_and_documents_and_metadata_from_docs(docs, original_filename=original_filename)
     return ids, docs, metadatas_list
 
 
@@ -65,7 +65,7 @@ def get_chroma_collection(user_id: str | None):
     return chroma_client, chromadb_name, user_collection
 
 
-def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
+def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None, original_filename: str | None = None):
     """
     Embeds file content into Chroma vector database
     """
@@ -77,8 +77,13 @@ def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
     chroma_client, chromadb_name, user_collection = get_chroma_collection(user_id)
 
     logger.info(f"File path provided: {file_path}, proceeding to add documents to Chroma collection.")
+    logger.info(f"Original filename for metadata: {original_filename}")
+
+    print("* * * Before Embedding * * *")
+    print("Original filename for metadata:", original_filename)
+
     # collect file embeddings if file_path is given
-    ids, docs, metadatas_list = parse_file(file_path)
+    ids, docs, metadatas_list = parse_file(file_path, original_filename=original_filename)
     # add documents to user collection
     add_documents_to_user_collection(client=chroma_client,
                                      user_id=chromadb_name,
@@ -86,6 +91,9 @@ def embed_file_to_chroma_vector_db(file_path: str | None, user_id: str | None):
                                      doc_documents=docs,
                                      metadatas_list=metadatas_list)
     logger.info(f"Documents added to Chroma collection for user: {chromadb_name}")
+
+    print("* * * After Embedding * * *")
+    print("Metadata samples:", metadatas_list[:2] if len(metadatas_list) >= 2 else metadatas_list)
     return user_collection
 
 
@@ -100,6 +108,7 @@ def query_chroma_db(top_k: int, user_query: str, user_id: str | None, file_name:
                                      query_text=user_query,
                                      n_results=top_k,
                                      file_name=file_name)
+    logger.info(f"Query file_name filter: {file_name}")
 
     # Chroma returns a dict with keys like 'documents', 'ids', 'metadatas'.
     # We safely extract the first list of documents (since we queried with a single text)
@@ -107,13 +116,19 @@ def query_chroma_db(top_k: int, user_query: str, user_id: str | None, file_name:
     if query_results:
         try:
             docs_field = query_results.get("documents")
+            metadatas_field = query_results.get("metadatas")
+            logger.info(f"Query returned {len(docs_field[0]) if docs_field and docs_field[0] else 0} documents")
+            if metadatas_field and metadatas_field[0]:
+                logger.info(f"Sample metadata from results: {metadatas_field[0][:2] if len(metadatas_field[0]) >= 2 else metadatas_field[0]}")
+
             # docs_field is typically a list of lists, take the first query's result list
             if isinstance(docs_field, list) and docs_field:
                 first_list = docs_field[0]
                 if isinstance(first_list, list):
                     documents = first_list
-        except Exception:
+        except Exception as e:
             # Leave documents empty if structure is unexpected
+            logger.error(f"Error extracting documents from query results: {e}")
             documents = []
     return documents
 
@@ -130,6 +145,13 @@ def rag_workflow_3(user_query: str,
     if file_name:
         # Query Chroma DB for relevant documents
         documents = query_chroma_db(top_k=top_k, user_id=user_id, user_query=user_query, file_name=file_name)
+
+        print("* * * RAG query file_name * * *")
+        print({"file_name": file_name,})
+        print(f"Retrieved {len(documents)} documents from Chroma DB.")
+        print("user_query:", user_query)
+        print("top_k:", top_k)
+        print("user_id:", user_id)
 
         if documents:
             text_resources = "\n".join(documents)

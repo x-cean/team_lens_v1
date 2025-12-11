@@ -11,7 +11,8 @@ def create_persistent_db_folder_if_not_exist(path: str):
     return path
 
 def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=None,
-                                                     workspace_id: str | None=None):
+                                                     workspace_id: str | None=None,
+                                                     original_filename: str | None=None):
     """
     downstream step after document loading with langchain docling loader
     Collects ids, documents, and metadata from a list of Document objects
@@ -31,6 +32,11 @@ def collect_ids_and_documents_and_metadata_from_docs(docs, user_id: str | None=N
                              if ("dl_meta" in doc.metadata and "origin" in doc.metadata["dl_meta"]
                                  and "filename" in doc.metadata["dl_meta"]["origin"]) \
                              else "unknown"
+
+        # Override with original filename if provided to ensure consistency with database
+        if original_filename:
+            file_name = original_filename
+
         # get headings
         headings_list = doc.metadata["dl_meta"]["headings"] \
             if ("dl_meta" in doc.metadata and "headings" in doc.metadata["dl_meta"]) \

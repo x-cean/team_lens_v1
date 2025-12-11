@@ -51,6 +51,10 @@ async def upload_file(
     Accept a file upload and save it temporarily using its original name.
     Add that file information to SQL.
     """
+
+    print("* * *")
+    print("Chat ID in /upload:", chat_id)
+
     import tempfile
 
     # Sanitize the filename to avoid directory traversal and unsafe chars
@@ -69,7 +73,8 @@ async def upload_file(
         f.write(content)
 
     # Embed the file into Chroma vector DB for trial users
-    embed_file_to_chroma_vector_db(file_path=save_path, user_id=None)
+    # Pass original_name to ensure ChromaDB metadata matches what's stored in the database
+    embed_file_to_chroma_vector_db(file_path=save_path, user_id=None, original_filename=original_name)
 
     # Create TrialFile record
     trial_file = TrialFile(
@@ -102,6 +107,9 @@ async def ask(
         if chat_history
         else None
     )
+    # print the chat id of ask
+    print("* * *")
+    print(f"Chat ID in /ask: {chat_id}")
     # combine system prompt and chat history if any, else just None because my openai function can handle that
     messages = chat_history_system + chat_history_formatted if chat_history_formatted else None
 
