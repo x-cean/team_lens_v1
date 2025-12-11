@@ -63,11 +63,51 @@ a#try:hover {
     color: #000;
 }
 
+#showUploadBtn {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #000000;
+    background: #000000;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+#showUploadBtn:hover {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+#upload-cta {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+#uploadedFileDisplay {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#upload-section {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
 #drop_zone {
-    border:2px dashed #ccc;
-    padding:20px;
-    text-align:center;
-    margin-bottom:10px;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#drop_zone:hover {
+    background: #f9f9f9;
 }
 
 #fileName {

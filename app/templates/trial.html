@@ -17,6 +17,7 @@
     <div id="upload-cta">
         <button id="showUploadBtn" type="button">Upload a file here</button>
     </div>
+    <div id="uploadedFileDisplay" style="display:none; margin-top: 10px; font-size: 0.95rem; color: #000000;"></div>
 
     <!-- Upload Section (separate from chat) -->
     <div id="upload-section" style="display:none;">
@@ -71,11 +72,14 @@
         let uploadedOriginalName = null;
         const showUploadBtn = document.getElementById('showUploadBtn');
         const uploadSection = document.getElementById('upload-section');
+        const uploadedFileDisplay = document.getElementById('uploadedFileDisplay');
 
         // Reveal upload interface when user clicks CTA button
         showUploadBtn.addEventListener('click', () => {
             uploadSection.style.display = 'block';
             showUploadBtn.style.display = 'none';
+            uploadedFileDisplay.style.display = 'none';
+            showUploadBtn.textContent = 'Upload a file here';
         });
 
         // Drag and drop for file upload
@@ -135,15 +139,26 @@
                     xhr.send(formData);
                 });
 
-                // Finalize upload UI
+                // Finalize upload UI - collapse section and show uploaded file
                 progressWrap.style.display = 'none';
                 uploadedFilePath = data.file_path;
                 uploadedOriginalName = data.original_name;
-                // Keep uploadStatus empty to avoid duplicate messaging
-                // Remove the temporary "Selected file: ..." line after upload completes
+
+                // Hide upload section and show button
+                uploadSection.style.display = 'none';
+                showUploadBtn.style.display = 'block';
+                showUploadBtn.textContent = 'Replace file';
+
+                // Show uploaded file with checkmark below button
+                uploadedFileDisplay.style.display = 'block';
+                uploadedFileDisplay.textContent = `✓ ${uploadedOriginalName}`;
+
+                // Reset file input for potential re-upload
+                fileInput.value = '';
+
+                // Clear temporary displays in upload section
                 fileNameEl.textContent = '';
-                uploadedFileInfo.style.display = 'block';
-                uploadedFileInfo.textContent = `File uploaded: ${uploadedOriginalName}`;
+                uploadedFileInfo.style.display = 'none';
             } catch (err) {
                 progressWrap.style.display = 'none';
                 uploadStatus.textContent = 'Upload failed. Please try again.';
