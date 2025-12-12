@@ -17,6 +17,10 @@ templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), ".
 router = APIRouter()
 
 
+"""
+Trial routes for trial usage without authentication.
+"""
+
 @router.get("/trial", response_class=HTMLResponse)
 def trial_page(request: Request):
     return templates.TemplateResponse("trial.html", {"request": request})
