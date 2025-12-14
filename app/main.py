@@ -6,6 +6,7 @@ import os
 
 from app.routes import trial
 from app.routes import home
+from app.routes import log_in
 
 # cd .. and then export PYTHONPATH=$(pwd)
 
@@ -30,3 +31,4 @@ app.add_middleware(
 
 app.include_router(home.router)
 app.include_router(trial.router)
+app.include_router(log_in.router)
