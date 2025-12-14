@@ -132,8 +132,8 @@ async def ask(
         top_k=3,
         file_name=file_name
     )
-
-    question = rag_results["user_query"] + rag_results["text_resources"]
+    text_resources = rag_results.get("text_resources", "")
+    question = (question + "\n" + text_resources) if text_resources else question
     answer = rag_results["answer"]
 
     # save the user message

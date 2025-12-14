@@ -165,10 +165,14 @@ def rag_workflow_3(user_query: str,
                                       model="gpt-5-mini", messages=messages)
 
     # create rag_results
+    text_resources_to_log = ("Resources: " + text_resources) if (
+            text_resources != "File was given but no relevant info found."
+            and text_resources != "No file was given by user.") else None
+
     rag_results = {
         "user_query": user_query,
         "file_name": file_name,
-        "text_resources": text_resources,
+        "text_resources": text_resources_to_log,
         "answer": answer
     }
     return rag_results
