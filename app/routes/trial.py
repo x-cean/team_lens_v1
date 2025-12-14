@@ -1,3 +1,5 @@
+from multiprocessing.connection import answer_challenge
+
 from fastapi import APIRouter, Request, UploadFile, File, Form, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -124,12 +126,15 @@ async def ask(
     else:
         file_name = None
     # call the function workflow 3
-    answer = rag_workflow_3(
+    rag_results = rag_workflow_3(
         user_query=question,
         messages=messages,
         top_k=3,
         file_name=file_name
     )
+
+    question = rag_results["user_query"] + rag_results["text_resources"]
+    answer = rag_results["answer"]
 
     # save the user message
     a_question_message = TrialMessage(

@@ -137,7 +137,7 @@ def rag_workflow_3(user_query: str,
                    file_name: str | None = None,
                    user_id: str | None = None,
                    messages: List[dict] | None = None,
-                   top_k: int = 3) -> str:
+                   top_k: int = 3) -> dict:
     """
     RAG workflow 3: Chroma vector DB + OpenAI LLM if file is uploaded by user, else just LLM response
     """
@@ -163,7 +163,15 @@ def rag_workflow_3(user_query: str,
     # Get response from OpenAI using the text resources
     answer = get_response_from_openai(user_prompt=user_query, resources=text_resources,
                                       model="gpt-5-mini", messages=messages)
-    return answer
+
+    # create rag_results
+    rag_results = {
+        "user_query": user_query,
+        "file_name": file_name,
+        "text_resources": text_resources,
+        "answer": answer
+    }
+    return rag_results
 
 
 
