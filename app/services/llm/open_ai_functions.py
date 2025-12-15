@@ -26,7 +26,7 @@ def get_response_from_openai(user_prompt,
                              messages=None,
                              model="gpt-5-mini",
                              reasoning_effort="low", text_verbosity="low",
-                             temperature=0.2, max_output_tokens=800,
+                             temperature=0.2, max_output_tokens=1000,
                              web_search_preview = True):
     """
     Get a response from OpenAI's GPT model, with optional web search preview and parameter settings
